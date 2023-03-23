@@ -2,22 +2,22 @@
 
 namespace App\Models;
 
+use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
-use Exception;
+use DB;
 
-class formulario_def extends Model
+class plantilla_doc extends Model
 {
     use HasFactory;
 
-    protected $table = 'formulario_def';
+    protected $table = 'plantilla_doc';
 
-    public static function requestInsertFormularioD($data) {
+    public static function requestInsertPlantillaDo($data) {
 
         try {
 
-            $response = self::insertFormularioD($data);
+            $response = self::insertPlantillaDo($data);
             if (isset($response["code"]) && $response["code"] == 200) {
                 return $response;
             } else {
@@ -32,12 +32,12 @@ class formulario_def extends Model
         }
     }
 
-    public static function insertFormularioD($data ) {
+    public static function insertPlantillaDo($data ) {
 
         $arrayResponse = array();
 
         try {
-            $formularioId = DB::table('formulario_def')->insertGetId($data);
+            $Id = \DB::table('plantilla_doc')->insertGetId($data);
 
             $arrayResponse = array(
                 "code"      => 200,
@@ -55,6 +55,6 @@ class formulario_def extends Model
     }
 
     public function respuesta() {
-        return $this->hasMany(respuesta_def::class);
+        return $this->hasMany(Respuesta::class);
     }
 }

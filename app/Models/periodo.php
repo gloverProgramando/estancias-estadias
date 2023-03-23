@@ -4,23 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Exception;
 
-class Proyecto extends Model
+class Periodo extends Model
 {
-    protected $table = 'proyecto';
+    protected $table = 'periodo';
 
     /**
      * LLamada a la peticion para agregar un nuevo marcador
      * Tambien devuelve la llamada si Ocurrió algun error
     */
 
-    public static function requestInsertProyecto($data) {
+    public static function requestInsertPeriodo($data) {
 
         try{
 
-            $response = self::insertProyecto($data);
+            $response = self::requestInsertPeriodo($data);
             if (isset($response["code"]) && $response["code"] == 200) {
                 return $response;
             } else {
@@ -39,17 +39,18 @@ class Proyecto extends Model
      * Agrega una marca nueva
     */
 
-    public static function insertProyecto($data ) {
+    public static function insertPeriodo($data) {
 
         $arrayResponse = array();
 
         try{
-            $proyectoId = \DB::table('proyecto')->insertGetId($data);
+            
+            $periodoId = DB::table('periodo')->insertGetId($data);
             
             $arrayResponse = array(
                 "code"      => 200,
                 "message"   => "Se ha agragado el registro",
-                "id" => $proyectoId
+                "id" => $periodoId
             );
         }catch (Exception $e) {
             $arrayResponse = array(

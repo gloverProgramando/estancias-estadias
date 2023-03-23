@@ -7,20 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
-class universidad extends Model
+class gradoacademico extends Model
 {
-    protected $table = 'universidad';
+    protected $table = 'gradoacademico';
 
     /**
      * LLamada a la peticion para agregar un nuevo marcador
      * Tambien devuelve la llamada si Ocurrió algun error
     */
 
-    public static function requestInsertUni($data) {
+    public static function requestInsertGradoacademico($data) {
 
         try{
 
-            $response = self::insertUni($data);
+            $response = self::insertGradoacademico($data);
             if (isset($response["code"]) && $response["code"] == 200) {
                 return $response;
             } else {
@@ -39,17 +39,18 @@ class universidad extends Model
      * Agrega una marca nueva
     */
 
-    public static function insertUni($data ) {
+    public static function insertGradoacademico($data) {
 
         $arrayResponse = array();
 
         try{
-            $detalleId = DB::table('universidad')->insertGetId($data);
+            
+            $IdGrado = DB::table('gradoacademico')->insertGetId($data);
             
             $arrayResponse = array(
                 "code"      => 200,
                 "message"   => "Se ha agragado el registro",
-                "id" => $detalleId
+                "id" => $IdGrado
             );
         }catch (Exception $e) {
             $arrayResponse = array(

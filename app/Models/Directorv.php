@@ -7,25 +7,23 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
-class carta_compromiso extends Model
+class Directorv extends Model
 {
-    use HasFactory;
-    protected $table = 'carta_compromiso';
-    protected $primaryKey='id';
+    protected $table = 'directorv';
 
     /**
      * LLamada a la peticion para agregar un nuevo marcador
      * Tambien devuelve la llamada si Ocurrió algun error
     */
 
-    public static function requestInsertcargaC($data) {
+    public static function requestInsertDirectorv($data) {
 
         try{
 
-            $response = self::insertCarga_C($data);
+            $response = self::requestInsertDirectorv($data);
             if (isset($response["code"]) && $response["code"] == 200) {
                 return $response;
-            }else{
+            } else {
                 return $response;
             }
         }catch(Exception $e) {
@@ -41,17 +39,18 @@ class carta_compromiso extends Model
      * Agrega una marca nueva
     */
 
-    public static function insertCarga_C($data) {
+    public static function InsertDirectorv($data) {
 
         $arrayResponse = array();
 
         try{
-            $id = DB::table('carta_compromiso')->insertGetId($data);
+            
+            $firma = DB::table('directorv')->insertGetId($data);
             
             $arrayResponse = array(
                 "code"      => 200,
                 "message"   => "Se ha agragado el registro",
-                "id" => $id
+                "id" => $directorvId
             );
         }catch (Exception $e) {
             $arrayResponse = array(

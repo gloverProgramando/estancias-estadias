@@ -2,31 +2,34 @@
 
 namespace App\Models;
 
+use App\Models\Procesos;
+use App\Models\Documentos;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
-class respuesta_doc extends Model
+class detalledoc extends Model
 {
-    use HasFactory;
-    protected $table = 'respuesta_doc';
-    protected $primaryKey='id';
+    protected $table = 'detalledoc';
+    protected $primaryKey='idDetalleDoccol';
+    $proceso = DB::table('Proceso')
+    join('Proceso','idProceso','=','Proceso_idProceso')
+    get();
+    $documentos=DB::table('Documentos')
+    join('Documentos','idDocumentos','=','Documentos_idDocumentos')
+    get();
 
-    public static function getAllRespuesta() {
-        return DB::table('respuesta_doc')
-                    ->join('users', 'users.id', '=', 'respuesta_doc.id_usuario')
-                    ->join('documentos', 'documentos.id_d', '=', 'respuesta_doc.id_documentos')
-                    ->get();
-    }
-    public static function requestInsertRespuesta($data) {
+    use HasFactory;
+
+    public static function requestInsertDetailsDocs($data) {
 
         try{
 
-            $response = self::insertRespuesta($data);
+            $response = self::InsertDetailsDocs($data);
             if (isset($response["code"]) && $response["code"] == 200) {
                 return $response;
-            }else{
+            } else {
                 return $response;
             }
         }catch(Exception $e) {
@@ -42,17 +45,18 @@ class respuesta_doc extends Model
      * Agrega una marca nueva
     */
 
-    public static function insertRespuesta($data) {
+    public static function InsertDetailsDocs($data) {
 
         $arrayResponse = array();
 
         try{
-            $id = DB::table('respuesta_doc')->insertGetId($data);
+            
+            $detailsDocId = DB::table('detalledoc')->insertGetId($data);
             
             $arrayResponse = array(
                 "code"      => 200,
                 "message"   => "Se ha agragado el registro",
-                "id" => $id
+                "id" => $detailsDocId
             );
         }catch (Exception $e) {
             $arrayResponse = array(
@@ -62,12 +66,6 @@ class respuesta_doc extends Model
         }
 
         return $arrayResponse;
-    }
-
-    //relacion uno a muchos (inversa)
-
-    public function user() {
-        return $this->belongsTo(User::class);
     }
 
 }

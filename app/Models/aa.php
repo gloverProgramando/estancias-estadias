@@ -4,22 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
-use Exception;
-class alumno_def extends Model
+
+class Aa extends Model
 {
-    protected $table = 'alumno_def';
+    use HasFactory;
+    protected $table = 'aa';
 
-    /**
-     * LLamada a la peticion para agregar un nuevo marcador
-     * Tambien devuelve la llamada si Ocurrió algun error
-    */
 
-    public static function requestInsertAlumnoD($data) {
+    public static function requestInsertAa($data) {
 
         try{
 
-            $response = self::insertAlumnoD($data);
+            $response = self::insertAa($data);
             if (isset($response["code"]) && $response["code"] == 200) {
                 return $response;
             } else {
@@ -34,22 +30,18 @@ class alumno_def extends Model
         }
     }
 
-    /**
-     * Agrega una marca nueva
-    */
-
-    public static function insertAlumnoD($data) {
+    public static function insertAa($data) {
 
         $arrayResponse = array();
 
         try{
             
-            $alumnoId = DB::table('alumno_def')->insertGetId($data);
+            $aaId = DB::table('aa')->insertGetId($data);
             
             $arrayResponse = array(
                 "code"      => 200,
                 "message"   => "Se ha agragado el registro",
-                "id" => $alumnoId
+                "id" => $aaId
             );
         }catch (Exception $e) {
             $arrayResponse = array(
@@ -60,4 +52,5 @@ class alumno_def extends Model
 
         return $arrayResponse;
     }
+    
 }
