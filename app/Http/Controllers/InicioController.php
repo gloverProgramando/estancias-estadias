@@ -18,12 +18,12 @@ class InicioController extends Controller
 
     public function redirect(){
         $userID=Auth::user()->id; 
-        $userrole=Auth::user()->role; 
+        $userrole=Auth::user()->IdTipoUsu; 
 
         if(!$userID){
             return redirect('/login');
         }else{
-            if($userrole=='admin'){
+            if($userrole==1 || $userrole=='1'){
                 return redirect('/admin');
             }else{
                 return redirect('/inicio');

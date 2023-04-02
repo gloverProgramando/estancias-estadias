@@ -30,7 +30,7 @@ class LoginController extends Controller
                 return redirect()->to('/login');
             }
             else{
-                if (auth()->user()->role == 'admin') {
+                if (auth()->user()->IdTipoUsu == '1' || auth()->user()->IdTipoUsu == 1) {
                     return redirect()->route('admin.index');
                 } else {
                     return redirect()->to('/inicio');
