@@ -54,7 +54,7 @@
 							<a href="{{ route('documentoEstancia1Admin.index',[1]) }}"><i class="zmdi zmdi-male-alt  zmdi-hc-5x" style="color: rgb(255,103,32)"></i></a>
 						</div>
 						<div class="col-6 registro">
-							<p class="registroCount">{{ $estancia['estancia1']  }}</p>
+							<p class="registroCount">{{ $datos['estanciaCount'] }}</p>
 							<small>Registrados</small>
 						</div>
 					</div>
@@ -69,7 +69,7 @@
 							<a href="{{ route('documentoEstancia1Admin.index',[2]) }}"><i class="zmdi zmdi-male-alt  zmdi-hc-5x" style="color: rgb(255,103,32)"></i></a>
 						</div>
 						<div class="col-6 registro">
-							<p class="registroCount">{{ $estancia['estancia2']  }}</p>
+							<p class="registroCount">{{ $datos['estancia2Count'] }}</p>
 							<small>Registrados</small>
 						</div>
 					</div>
@@ -84,7 +84,7 @@
 							<a href="{{ route('documentoEstancia1Admin.index',[3]) }}"><i class="zmdi zmdi-male-alt  zmdi-hc-5x" style="color: rgb(255,103,32)"></i></a>
 						</div>
 						<div class="col-6 registro">
-							<p class="registroCount">{{ $estadia['estadia']  }}</p>
+							<p class="registroCount">{{ $datos['estadiaCount'] }}</p>
 							<small>Registrados</small>
 						</div>
 					</div>
@@ -98,7 +98,7 @@
 							<a href="{{ route('documentoEstancia1Admin.index',[4]) }}"><i class="zmdi zmdi-male-alt  zmdi-hc-5x" style="color: rgb(255,103,32)"></i></a>
 						</div>
 						<div class="col-6 registro">
-							<p class="registroCount">{{ $estadia['estadia_nacional']  }}</p>
+							<p class="registroCount">{{ $datos['serviciosocialCount'] }}</p>
 							<small>Registrados</small>
 						</div>
 					</div>	
@@ -113,7 +113,7 @@
 							<a href="{{ route('documentoEstancia1Admin.index',[5]) }}"><i class="zmdi zmdi-male-alt  zmdi-hc-5x" style="color: rgb(255,103,32)"></i></a>
 						</div>
 						<div class="col-6 registro">
-							<p class="registroCount">{{ $servicio_social }}</p>
+							<p class="registroCount">{{ $datos['estadianacionalesCount'] }}</p>
 							<small>Registrados</small>
 						</div>
 					</div>
