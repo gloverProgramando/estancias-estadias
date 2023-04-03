@@ -16,14 +16,14 @@ class RegisterController extends Controller
 
         $this->validate(request(), [
             'name' => 'required|integer',
-            'role'  => 'required|string',
+            'tole'  => 'required|integer',
             'email' => 'required|email',
             'password' => 'required|confirmed'
         ]);
         
-        $user = User::create(request(['name', 'role', 'email', 'password']));
+        $user = User::create(request(['name', 'IdTipoUsu', 'email', 'password']));
 
-        if (auth()->login($user) == 'admin') {
+        if (auth()->login($user) == 1 || auth()->login($user) == '1') {
             return view('admin.index');
         } else {
             return redirect()->to('/usuarios');
@@ -33,11 +33,11 @@ class RegisterController extends Controller
 
         $this->validate(request(), [
             'name' => 'required',
-            'role'  => 'required|string',
+            'IdTipoUsu'  => 'required|integer',
             'email' => 'required|email',
             'password' => 'required|confirmed'
         ]);
-        User::create(request(['name', 'role', 'email', 'password']));
+        User::create(request(['name', 'IdTipoUsu', 'email', 'password']));
 
         return redirect()->to('/datatable_user')->with('success','Usuario agregado');
 

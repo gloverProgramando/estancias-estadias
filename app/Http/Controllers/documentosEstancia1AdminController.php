@@ -246,11 +246,7 @@ class documentosEstancia1AdminController extends Controller
         $r_m   = ['reporte_mensual' => $doc_reporte_mensual];
         $c_com   = ['carta_compromiso' => $doc_carta_compromiso];
         $datos5 = Arr::collapse([$c_com,$r_m]);
-        return view('admin.documentosEstancia1',['documentos'=>$datos,'documentos1'=>$datos1,'documentos2'=>$datos2,
-        'documentos3'=>$datos3,'documentos4'=>$datos4,'proceso'=>$var,'documentos5'=>$datos5,
-        'reporte_mensual2'=> $reporte_mensual2,'reporte_mensual3'=> $reporte_mensual3,'reporte_mensual4'=> $reporte_mensual4,'reporte_mensual5'=> $reporte_mensual5,
-        'reporte_mensual6'=> $reporte_mensual6,'reporte_mensual7'=> $reporte_mensual7,'reporte_mensual8'=> $reporte_mensual8,'reporte_mensual9'=> $reporte_mensual9,
-        'reporte_mensual10'=> $reporte_mensual10,'reporte_mensual11'=> $reporte_mensual11,'reporte_mensual12'=> $reporte_mensual12]);
+        return view('admin.documentosEstancia1',[]);
     }
     public function ver_cd_estancia_f03($id,$name){//#
         $users = DB::table('users')

@@ -19,17 +19,17 @@
     <script src="https://www.google.com/recaptcha/api.js"></script>
 	<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css">
+    @include('plantilla/admin/head')
     <link rel="stylesheet" href='{{ asset("/css/main.css") }}'>
 
 </head>
 <body>
-    <!-- SideBar -->
-	@include('plantilla/admin/sideBar')
+    @include('plantilla/admin/navBar')
 
 	<!-- Content page-->
 	<section class="full-box dashboard-contentPage">
-		<!-- NavBar -->
-		@include('plantilla/admin/navBar')
       
 		<!-- Content page -->
 		<div class="container p-3">

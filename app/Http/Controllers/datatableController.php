@@ -14,7 +14,8 @@ use Redirect;
 class datatableController extends Controller
 {
     public function ver(){
-        $users = User::all();
+        $users = User::join('tipousuario', 'users.IdTipoUsu', '=', 'tipousuario.IdTipoUsu')
+        ->get();
         return view('admin.datatable',compact('users'));
     }
 

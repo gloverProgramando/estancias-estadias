@@ -140,7 +140,8 @@ class UsuariosController extends Controller
     }
 
     public function ver(){
-        return view('admin.agregar_usuario');
+        $tiposUsuarios = DB::table('tipousuario')->get();
+        return view('admin.agregar_usuario',['tipousuario'=>$tiposUsuarios]);
     }
     public function ver_datos_usuario($id){
         $datos=DB::table('users')->where('id',$id)->get();

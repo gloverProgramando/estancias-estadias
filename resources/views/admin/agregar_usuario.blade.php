@@ -37,9 +37,10 @@
                             </div>
                             <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <div class="form-outline mb-4">
-                                    <select class="form-control" name="role" id="role">
-                                        <option value="alumno">Alumno</option>
-                                        <option value="admin">Admin</option>
+                                    <select name="tipo_usuario" class="form-control" name="IdTipoUsu" id="IdTipoUsu">
+                                        @foreach ($tipousuario as $tipo)
+                                            <option value="{{ $tipo->IdTipoUsu }}">{{ $tipo->NombreTipo }}</option>
+                                        @endforeach
                                     </select>
                                     <label class="form-label" for="role">Rol de Usuario</label>
                                 </div>
