@@ -2,39 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\carga_horaria;
-use App\Models\carta_aceptacion;
-use App\Models\carta_liberacion;
-use App\Models\carta_presentacion;
-use App\Models\carta_responsiva;
-use App\Models\cedula_registro;
-use App\Models\constancia_derecho;
-use App\Models\definicion_proyecto;
-use App\Models\carta_compromiso;
-use App\Models\reporte_mensual;
-use App\Models\reporte_mensual2;
-use App\Models\reporte_mensual3;
-use App\Models\reporte_mensual4;
-use App\Models\reporte_mensual5;
-use App\Models\reporte_mensual6;
-use App\Models\reporte_mensual7;
-use App\Models\reporte_mensual8;
-use App\Models\reporte_mensual9;
-use App\Models\reporte_mensual10;
-use App\Models\reporte_mensual11;
-use App\Models\reporte_mensual12;
+
 use App\Models\User;
+use App\Models\Periodo;
+use App\Models\Fase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Arr;
+use Carbon\Carbon;
+use RealRashid\SweetAlert\Facades\Alert;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\Auth;
 use Redirect;
 
 class documentosEstancia1AdminController extends Controller
 {
+
+    public function periodo(){
+        $fases = DB::table('fases')
+        ->get();
+        return view('admin.crear_periodo',compact('fases'));
+    }
+
+    public function crearPeriodo(Request $request){
+        $date = Carbon::now();
+        $anio = Carbon::parse($date)->year;
+        $mes = Carbon::parse($date)->month;
+
+        if ($mes >= 1 && $mes <= 4) {
+            $numero = $anio . '01';
+        } elseif ($mes >= 5 && $mes <= 8) {
+            $numero = $anio . '02';
+        } else {
+            $numero = $anio . '03';
+        }
+        for ($i = 1; $i <= 3; $i++) {
+            $periodo = new Periodo;
+            $periodo->Periodo = $numero;
+            $periodo->Idfase = $i;
+            $periodo->Activo = 1;
+            $periodo->save();
+        }
+        return redirect()->to('/Periodo')->with('success','periodo: '.$numero.' creado con exito');
+    }
+
     public function ver($proces){
         $name=['Estancia I','Estancia II','Estadia','Estadias Nacionales','Servicio Social'];
         //!cambiar este numero si se quiere agregar un nuevo proceso y tambien agregar el nombre en $name
@@ -45,207 +58,16 @@ class documentosEstancia1AdminController extends Controller
         
         //datos usuarios
         $users = DB::table('users')
-        ->join('respuesta', 'users.id', '=', 'respuesta.id_usuario')
-        ->join('formulario', 'respuesta.id_formulario', '=', 'formulario.id')
-        ->join('alumno', 'formulario.id_alumno', '=', 'alumno.id')
-        ->join('carreras', 'alumno.id_carrera', '=', 'carreras.id_carrera')
-        ->where('alumno.id_procesos',$proces)
         ->get();
         //datos de documentos
         $documentos=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->where('documentos.id_proceso',$proces)
         ->get();
         //array 1
         $users   = ['usuarios' => $users];
         $docs   = ['documentos' => $documentos];
         $datos = Arr::collapse([$users,$docs]);
 
-        //datos f02
-        $doc_f02 = DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('carta_aceptacion','documentos.id_c_aceptacion','=','carta_aceptacion.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //datos f04
-        $doc_f04=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('definicion_proyecto','documentos.id_d_proyecto','=','definicion_proyecto.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //array 2
-        $c_a   = ['carta_aceptacion' => $doc_f02];
-        $d_p   = ['definicion_proyecto' => $doc_f04];
-        $datos1 = Arr::collapse([$c_a,$d_p]);
-        //datos f03
-        $doc_f03=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('cedula_registro','documentos.id_c_registro','=','cedula_registro.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //datos f05
-        $doc_f05=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('carta_liberacion','documentos.id_c_liberacion','=','carta_liberacion.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //array 3
-        $c_l   = ['carta_liberacion' => $doc_f05];
-        $c_r   = ['cedula_registro' => $doc_f03];
-        $datos2 = Arr::collapse([$c_l,$c_r]);
-        //datos f01
-        $doc_carta_presentacion=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('carta_presentacion','documentos.id_c_presentacion','=','carta_presentacion.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //datos carga horaria
-        $doc_carga_horaria=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('carga_horaria','documentos.id_c_horaria','=','carga_horaria.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //array 4
-        $c_p   = ['carta_presentacion' => $doc_carta_presentacion];
-        $c_h   = ['carga_horaria' => $doc_carga_horaria];
-        $datos3 = Arr::collapse([$c_p,$c_h]);
-        //datos constancia derecho
-        $doc_constancia_derecho=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('constancia_derecho','documentos.id_c_derecho','=','constancia_derecho.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //datos carta responsiva
-        $doc_carta_responsiva=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('carta_responsiva','documentos.id_c_responsiva','=','carta_responsiva.id')
-        ->where('documentos.id_proceso',$proces)
 
-        ->get();
-
-        $c_d   = ['constancia_derecho' => $doc_constancia_derecho];
-        $c_res   = ['carta_responsiva' => $doc_carta_responsiva];
-        $datos4 = Arr::collapse([$c_d,$c_res]);
-        //datos carta compromiso
-        $doc_carta_compromiso=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('carta_compromiso','documentos.id_c_compromiso','=','carta_compromiso.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-
-        //datos reporte mensual
-        $doc_reporte_mensual=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual','documentos.id_r_mensual','=','reporte_mensual.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-       //datos reporte mensual mes 2
-        $doc_reporte_mensual2=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual2','documentos.id_r_mensual2','=','reporte_mensual2.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //datos reporte mensual mes 3
-        $doc_reporte_mensual3=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual3','documentos.id_r_mensual3','=','reporte_mensual3.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //datos reporte mensual mes 4
-        $doc_reporte_mensual4=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual4','documentos.id_r_mensual4','=','reporte_mensual4.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //datos reporte mensual mes 5
-        $doc_reporte_mensual5=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual5','documentos.id_r_mensual5','=','reporte_mensual5.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //datos reporte mensual mes 6
-        $doc_reporte_mensual6=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual6','documentos.id_r_mensual6','=','reporte_mensual6.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //datos reporte mensual mes 7
-        $doc_reporte_mensual7=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual7','documentos.id_r_mensual7','=','reporte_mensual7.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //datos reporte mensual mes 8
-        $doc_reporte_mensual8=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual8','documentos.id_r_mensual8','=','reporte_mensual8.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //datos reporte mensual mes 9
-        $doc_reporte_mensual9=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual9','documentos.id_r_mensual9','=','reporte_mensual9.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //datos reporte mensual mes 10
-        $doc_reporte_mensual10=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual10','documentos.id_r_mensual10','=','reporte_mensual10.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //datos reporte mensual mes 11
-        $doc_reporte_mensual11=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual11','documentos.id_r_mensual11','=','reporte_mensual11.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //datos reporte mensual mes 12
-        $doc_reporte_mensual12=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual12','documentos.id_r_mensual12','=','reporte_mensual12.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-
-
-        // Aqui se agregara una neuva funcion para los 12 docs
-        $reporte_mensual2 = ['reporte_mensual2' => $doc_reporte_mensual2];
-        $reporte_mensual3 = ['reporte_mensual3' => $doc_reporte_mensual3];
-        $reporte_mensual4 = ['reporte_mensual4' => $doc_reporte_mensual4];
-        $reporte_mensual5 = ['reporte_mensual5' => $doc_reporte_mensual5];
-        $reporte_mensual6 = ['reporte_mensual6' => $doc_reporte_mensual6];
-        $reporte_mensual7 = ['reporte_mensual7' => $doc_reporte_mensual7];
-        $reporte_mensual8 = ['reporte_mensual8' => $doc_reporte_mensual8];
-        $reporte_mensual9 = ['reporte_mensual9' => $doc_reporte_mensual9];
-        $reporte_mensual10 = ['reporte_mensual10' => $doc_reporte_mensual10];
-        $reporte_mensual11 = ['reporte_mensual11' => $doc_reporte_mensual11];
-        $reporte_mensual12 = ['reporte_mensual12' => $doc_reporte_mensual12];
-        
-        //array 5
-        $r_m   = ['reporte_mensual' => $doc_reporte_mensual];
-        $c_com   = ['carta_compromiso' => $doc_carta_compromiso];
-        $datos5 = Arr::collapse([$c_com,$r_m]);
         return view('admin.documentosEstancia1',[]);
     }
     public function ver_cd_estancia_f03($id,$name){//#

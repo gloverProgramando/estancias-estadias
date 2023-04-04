@@ -84,6 +84,14 @@ Route::get('/logout', [LoginController::class, 'destroy'])
     ->middleware('auth.admin')
     ->name('admin.index');
 
+    Route::get('/Periodo',[documentosEstancia1AdminController::class, 'periodo'])
+    ->middleware('auth.admin')
+    ->name('adminPeriodo.index');
+
+    Route::get('/CrearPeriodo',[documentosEstancia1AdminController::class, 'crearPeriodo'])
+    ->middleware('auth.admin')
+    ->name('adminPeriodoCrear.index');
+
 //Ver usuarios
     // Route::get('/usuarios/table', [UsuariosController::class, 'armar'])
     // ->name('usuarios/table.index') //Para usar con data tables

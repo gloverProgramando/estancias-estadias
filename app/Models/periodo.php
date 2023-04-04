@@ -10,7 +10,7 @@ use Exception;
 class Periodo extends Model
 {
     protected $table = 'periodo';
-
+    public $timestamps = false;
     /**
      * LLamada a la peticion para agregar un nuevo marcador
      * Tambien devuelve la llamada si Ocurrió algun error

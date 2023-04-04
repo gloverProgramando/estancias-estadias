@@ -30,6 +30,7 @@
                         <li><a class="dropdown-item" href="{{ route('activar_botones.index') }}">Activar Subida De
                                 Archivos</a></li>
                         <li><a class="dropdown-item" href="{{ route('datatabledetallada.index') }}">Registro alumno-empresas</a></li>
+                        <li><a class="dropdown-item" href="{{route('adminPeriodo.index')}}">Crear Periodo</a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
