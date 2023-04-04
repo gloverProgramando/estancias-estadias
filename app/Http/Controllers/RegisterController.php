@@ -15,13 +15,15 @@ class RegisterController extends Controller
     public function store() {
 
         $this->validate(request(), [
-            'name' => 'required|integer',
-            'tole'  => 'required|integer',
-            'email' => 'required|email',
-            'password' => 'required|confirmed'
+            'name' => 'required',
+            'IdTipoUsu'  => 'required',
+            'email' => 'required',
+            'password' => 'required',
+            'Nombre' => 'required',
+            'Matricula' => 'required'
         ]);
         
-        $user = User::create(request(['name', 'IdTipoUsu', 'email', 'password']));
+        $user = User::create(request(['name', 'IdTipoUsu', 'email', 'password','Nombre','Matricula']));
 
         if (auth()->login($user) == 1 || auth()->login($user) == '1') {
             return view('admin.index');
@@ -33,11 +35,13 @@ class RegisterController extends Controller
 
         $this->validate(request(), [
             'name' => 'required',
-            'IdTipoUsu'  => 'required|integer',
-            'email' => 'required|email',
-            'password' => 'required|confirmed'
+            'IdTipoUsu'  => 'required',
+            'email' => 'required',
+            'password' => 'required',
+            'Nombre' => 'required',
+            'Matricula' => 'required'
         ]);
-        User::create(request(['name', 'IdTipoUsu', 'email', 'password']));
+        User::create(request(['name', 'IdTipoUsu', 'email', 'password','Nombre','Matricula']));
 
         return redirect()->to('/datatable_user')->with('success','Usuario agregado');
 

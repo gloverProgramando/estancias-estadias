@@ -37,7 +37,7 @@
                             </div>
                             <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
                                 <div class="form-outline mb-4">
-                                    <select name="tipo_usuario" class="form-control" name="IdTipoUsu" id="IdTipoUsu">
+                                    <select class="form-control" name="IdTipoUsu" id="IdTipoUsu">
                                         @foreach ($tipousuario as $tipo)
                                             <option value="{{ $tipo->IdTipoUsu }}">{{ $tipo->NombreTipo }}</option>
                                         @endforeach
@@ -81,6 +81,28 @@
                                 @error('message')
                                     <p class="border border-danger rounded-md bg-red-200 w-full text-red-600 p-2 my-2">*
                                         Error</p>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <div class="form-outline mb-4">
+                                    <input type="text" id="Nombre" class="form-control form-control-lg"
+                                        name="Nombre" />
+                                    <label class="form-label" for="name">Nombre de la persona</label>
+                                </div>
+                                @error('name')
+                                    <p class="border border-danger rounded-md bg-red-200 w-full text-red-600 p-2 my-2">
+                                        {{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                                <div class="form-outline mb-4">
+                                    <input type="number" id="Matricula" class="form-control form-control-lg"
+                                        name="Matricula" />
+                                    <label class="form-label" for="name">Matricula</label>
+                                </div>
+                                @error('name')
+                                    <p class="border border-danger rounded-md bg-red-200 w-full text-red-600 p-2 my-2">
+                                        {{ $message }}</p>
                                 @enderror
                             </div>
                             <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
