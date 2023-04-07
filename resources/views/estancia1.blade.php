@@ -652,7 +652,7 @@ Error
 <form action="{{ route('subir_doc.index', [auth()->user()->name, $proceso[0], 4]) }}"
 method="post" enctype="multipart/form-data">
 @csrf
-@if ($botones[0]->periodo1 == true || $noActivar == 5)
+@if ($botones[0]->Periodo == 1 || $noActivar == 5)
 <span class="btn fileinput-button">
 <i class="zmdi zmdi-file"></i>
 <input type="file" class="archivo" name="f01">
@@ -813,7 +813,7 @@ Error
 <form action="{{ route('subir_doc.index', [auth()->user()->name, $proceso[0], 5]) }}"
 method="post" enctype="multipart/form-data">
 @csrf
-@if ($botones[0]->periodo2 == true || $noActivar == 5)
+@if ($botones[0]->Periodo == 2 || $noActivar == 5)
 <span class="btn fileinput-button">
 <i class="zmdi zmdi-file"></i>
 <input type="file" class="archivo" name="f02">
@@ -1348,12 +1348,9 @@ Error
 <!--eliminar F04-->
 <div class="col-6 col-sm-6 col-md-2 py-1 colLlenar">
 <form class="btn-eliminarDP-system" method="post"
-action="{{ route('eliminar_f04.index', [$proceso[0], $dato->id_alumno, $dato->id_asesor_emp, $dato->id_proyecto, $dato->id_detalle]) }}">
+action="{{ route('eliminar_f04.index', [$proceso[0], $dato->id]) }}">
 @csrf
-@foreach ($etapas['etapas'] as $datoE)
-<input type="text" name="id_etapas_{{ $datoE->numero }}"
-value="{{ $datoE->id }}" class="id_d">
-@endforeach
+
 <button type="submit"
 class="btn btn-outline-danger btnCancelar">Eliminar</button>
 </form>
@@ -1551,7 +1548,7 @@ Error
 <form action="{{ route('subir_doc.index', [auth()->user()->name, $proceso[0], 8]) }}"
 method="post" enctype="multipart/form-data">
 @csrf
-@if ($botones[0]->periodo3 == true || $noActivar == 5)
+@if ($botones[0]->Periodo == 3 || $noActivar == 5)
 <span class="btn fileinput-button">
 <i class="zmdi zmdi-file"></i>
 <input type="file" class="archivo" name="f05">

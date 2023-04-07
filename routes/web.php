@@ -308,8 +308,10 @@ Route::match(['post','get'],'/estancia1/{Proces}', [Estancia1Controller::class, 
     ->name('f04Guardar1.index');//*optimizado
 
     //eliminar f04
-    Route::match(['post', 'delete','put','get'],'/f04/{proces}/{id_a}/{id_a_e}/{id_p}/{id_d}',[PdfController::class,'eliminarF04'])
+    Route::match(['post', 'delete','put','get'],'/f04/{proces}/{id_a}',[PdfController::class,'eliminarF04'])
     ->name('eliminar_f04.index');//*optimizado
+    /*Route::match(['post', 'delete','put','get'],'/f04/{proces}/{id_a}/{id_a_e}/{id_p}/{id_d}',[PdfController::class,'eliminarF04'])
+    ->name('eliminar_f04.index');*///*optimizado
 
     //descargar f04 con datos
     Route::get('/descarga_cd_estacia_f04/{id_proces}/{name}', [PdfController::class, 'descarga_cd_estancia_f04'])

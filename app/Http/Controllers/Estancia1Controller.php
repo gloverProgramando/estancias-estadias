@@ -45,25 +45,29 @@ class Estancia1Controller extends Controller
             $var=[$proces,$name[$proces-1]];//guarda el numero y nombre del proceso
         }else return redirect('inicio');
         $users = DB::table('users')
-        ->join('respuesta', 'users.id', '=', 'respuesta.id_usuario')
-        ->join('formulario', 'respuesta.id_formulario', '=', 'formulario.id')
-        ->join('alumno', 'formulario.id_alumno', '=', 'alumno.id')
-        ->join('empresa', 'formulario.id_empresa', '=', 'empresa.id')
-        ->join('asesor_empresarial', 'formulario.id_asesor_emp', '=', 'asesor_empresarial.id')
-        ->join('asesor_academico', 'formulario.id_asesor_aca', '=', 'asesor_academico.id')
-        ->join('proyecto', 'formulario.id_proyecto', '=', 'proyecto.id')
-        ->join('carreras', 'carreras.id_carrera', '=', 'alumno.id_carrera')
-        ->select('formulario.id_alumno','formulario.id_empresa','formulario.id_asesor_emp','formulario.id_asesor_aca','formulario.id_proyecto','formulario.id','respuesta.id_usuario','carreras.nombre_carrera','users.name','alumno.ape_paterno','alumno.ape_materno','alumno.nombres','alumno.tel','alumno.matricula','alumno.email_per','alumno.email','alumno.no_ss','alumno.direccion','alumno.id_carrera','empresa.nombre_emp','empresa.giro','empresa.id_tipo','empresa.direccion_emp','empresa.ape_paterno_rh','empresa.ape_materno_rh','empresa.nombres_rh','empresa.tel_lada','empresa.tel_num','empresa.tel_ext','empresa.email_emp','asesor_empresarial.ape_paterno_ae','asesor_empresarial.ape_materno_ae','asesor_empresarial.nombres_ae','asesor_empresarial.id_cargo_ae','asesor_empresarial.tel_lada_ae','asesor_empresarial.tel_num_ae','asesor_empresarial.email_ae','asesor_academico.ape_paterno_aa','asesor_academico.ape_materno_aa','asesor_academico.nombres_aa','asesor_academico.id_cargo_aa','asesor_academico.tel_lada_aa','asesor_academico.tel_num_aa','asesor_academico.email_aa','proyecto.nombre_proyecto')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+
+        //->join('respuesta', 'users.id', '=', 'respuesta.id_usuario')
+        //->join('formulario', 'respuesta.id_formulario', '=', 'formulario.id')
+        //->join('alumno', 'formulario.id_alumno', '=', 'alumno.id')
+       // ->join('empresa', 'formulario.id_empresa', '=', 'empresa.id')
+        ///->join('ae', 'formulario.id_asesor_emp', '=', 'ae.id')
+        //->join('aa', 'formulario.id_asesor_aca', '=', 'aa.id')
+        //->join('proyecto', 'formulario.id_proyecto', '=', 'proyecto.id')
+        //->join('carrera', 'carrera.id_carrera', '=', 'alumno.id_carrera')
+        //->select('formulario.id_alumno','formulario.id_empresa','formulario.id_asesor_emp','formulario.id_asesor_aca','formulario.id_proyecto','formulario.id','respuesta.id_usuario','carreras.nombre_carrera','users.name','alumno.ape_paterno','alumno.ape_materno','alumno.nombres','alumno.tel','alumno.matricula','alumno.email_per','alumno.email','alumno.no_ss','alumno.direccion','alumno.id_carrera','empresa.nombre_emp','empresa.giro','empresa.id_tipo','empresa.direccion_emp','empresa.ape_paterno_rh','empresa.ape_materno_rh','empresa.nombres_rh','empresa.tel_lada','empresa.tel_num','empresa.tel_ext','empresa.email_emp','asesor_empresarial.ape_paterno_ae','asesor_empresarial.ape_materno_ae','asesor_empresarial.nombres_ae','asesor_empresarial.id_cargo_ae','asesor_empresarial.tel_lada_ae','asesor_empresarial.tel_num_ae','asesor_empresarial.email_ae','asesor_academico.ape_paterno_aa','asesor_academico.ape_materno_aa','asesor_academico.nombres_aa','asesor_academico.id_cargo_aa','asesor_academico.tel_lada_aa','asesor_academico.tel_num_aa','asesor_academico.email_aa','proyecto.nombre_proyecto')
         ->where('users.id',$userID)
-        ->where('alumno.id_procesos',$proces)
+        ->where('proceso.idUsuario',$proces)
         ->get();
 
         $datosCedulaFormulario = DB::table('users')
-        ->join('respuesta', 'users.id', '=', 'respuesta.id_usuario')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+
+        /*->join('respuesta', 'users.id', '=', 'respuesta.id_usuario')
         ->join('formulario', 'respuesta.id_formulario', '=', 'formulario.id')
-        ->join('alumno', 'formulario.id_alumno', '=', 'alumno.id')
+        ->join('alumno', 'formulario.id_alumno', '=', 'alumno.id')*/
         ->where('users.id',$userID)
-        ->where('alumno.id_procesos',$proces)
+        ->where('proceso.idUsuario',$proces)
         ->get();
 
         $u   = ['user' => $users];
@@ -72,21 +76,22 @@ class Estancia1Controller extends Controller
         $datos = Arr::collapse([$u,$datosCF]);
 
         $definicionProyecto = DB::table('users')
-        ->join('respuesta_def', 'users.id', '=', 'respuesta_def.id_usuario')
+        /*->join('respuesta_def', 'users.id', '=', 'respuesta_def.id_usuario')
         ->join('formulario_def', 'respuesta_def.id_formulario', '=', 'formulario_def.id')
         ->join('alumno_def', 'formulario_def.id_alumno', '=', 'alumno_def.id')
         ->join('asesor_empresarial_def', 'formulario_def.id_asesor_emp', '=', 'asesor_empresarial_def.id')
         ->join('proyecto_def', 'formulario_def.id_proyecto', '=', 'proyecto_def.id')
-        ->join('detalle_def','formulario_def.id_detalle','=','detalle_def.id')
+        ->join('detalle_def','formulario_def.id_detalle','=','detalle_def.id')*/
         ->where('users.id',$userID)
-        ->where('alumno_def.id_proceso',$proces)
+       // ->where('alumno_def.id_proceso',$proces)
         ->get();
         $datosDefinicionProyecto = DB::table('users')
-        ->join('respuesta_def', 'users.id', '=', 'respuesta_def.id_usuario')
+        /*->join('respuesta_def', 'users.id', '=', 'respuesta_def.id_usuario')
         ->join('formulario_def', 'respuesta_def.id_formulario', '=', 'formulario_def.id')
-        ->join('alumno_def', 'formulario_def.id_alumno', '=', 'alumno_def.id')
+        ->join('alumno_def', 'formulario_def.id_alumno', '=', 'alumno_def.id')*/
         ->where('users.id',$userID)
-        ->where('alumno_def.id_proceso',$proces)
+
+        //->where('alumno_def.id_proceso',$proces)
         ->get();
 
         $defP  = ['def' => $definicionProyecto];
@@ -95,19 +100,23 @@ class Estancia1Controller extends Controller
         $datos1 = Arr::collapse([$defP,$datosDp]);
         
         $documentos=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+        /*->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')*/
+        ->join('documentos','documentos.usuario','=','users.id')
         ->where('users.id',$userID)
-        ->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
+        ->where('proceso.IdProceso',$proces)
+        //->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
         ->get();
 
         $cedula_doc=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('cedula_registro','cedula_registro.id','=','documentos.id_c_registro')
-        ->select('documentos.id_c_registro as id','cedula_registro.nombre_c_r','cedula_registro.estado_c_r','cedula_registro.observaciones_c_r','respuesta_doc.id_documentos','users.name')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+        //->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
+        //->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
+       // ->join('cedula_registro','cedula_registro.id','=','documentos.id_c_registro')
+       // ->select('documentos.id_c_registro as id','cedula_registro.nombre_c_r','cedula_registro.estado_c_r','cedula_registro.observaciones_c_r','respuesta_doc.id_documentos','users.name')
         ->where('users.id',$userID)
-        ->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
+        ->where('proceso.IdProceso',$proces)
+        //->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
         ->get();
 
         $docs  = ['documentos' => $documentos];
@@ -115,17 +124,19 @@ class Estancia1Controller extends Controller
         $datos2 = Arr::collapse([$docs,$cedula_docs]);
         //datos f04 doc
         $definicion_Proyecto_doc=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+        /*->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
         ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
         ->join('definicion_proyecto','definicion_proyecto.id','=','documentos.id_d_proyecto')
-        ->select('documentos.id_d_proyecto as id','definicion_proyecto.nombre_d_p','definicion_proyecto.estado_d_p','definicion_proyecto.observaciones_d_p','respuesta_doc.id_documentos','users.name')
+        ->select('documentos.id_d_proyecto as id','definicion_proyecto.nombre_d_p','definicion_proyecto.estado_d_p','definicion_proyecto.observaciones_d_p','respuesta_doc.id_documentos','users.name')*/
         ->where('users.id',$userID)
-        ->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
+        ->where('proceso.IdProceso',$proces)
+       // ->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
         ->get();
         //etapas de proyecto
         $etapas=DB::table('users')
-        ->join('respuesta_etapa','users.id','=','respuesta_etapa.id_usuario')
-        ->join('etapas_del_proyecto','etapas_del_proyecto.id','=','respuesta_etapa.id_etapa_proyecto')
+        /*->join('respuesta_etapa','users.id','=','respuesta_etapa.id_usuario')
+        ->join('etapas_del_proyecto','etapas_del_proyecto.id','=','respuesta_etapa.id_etapa_proyecto')*/
         ->where('users.id',$userID)
         ->get();
         $etapas  = ['etapas' => $etapas];
@@ -134,21 +145,25 @@ class Estancia1Controller extends Controller
 
         //datos f02 doc
         $carta_aceptacion=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+        /*->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
         ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
         ->join('carta_aceptacion','carta_aceptacion.id','=','documentos.id_c_aceptacion')
-        ->select('documentos.id_c_aceptacion as id','carta_aceptacion.nombre','carta_aceptacion.estado','carta_aceptacion.observaciones','respuesta_doc.id_documentos','users.name')
+        ->select('documentos.id_c_aceptacion as id','carta_aceptacion.nombre','carta_aceptacion.estado','carta_aceptacion.observaciones','respuesta_doc.id_documentos','users.name')*/
         ->where('users.id',$userID)
-        ->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
+        ->where('proceso.IdProceso',$proces)
+        //->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
         ->get();
         //datos f05 doc
         $carta_liberacion =DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+        /*->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
         ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
         ->join('carta_liberacion','carta_liberacion.id','=','documentos.id_c_liberacion')
-        ->select('documentos.id_c_liberacion as id','carta_liberacion.nombre_c_l','carta_liberacion.estado_c_l','carta_liberacion.observaciones_c_l','respuesta_doc.id_documentos','users.name')
+        ->select('documentos.id_c_liberacion as id','carta_liberacion.nombre_c_l','carta_liberacion.estado_c_l','carta_liberacion.observaciones_c_l','respuesta_doc.id_documentos','users.name')*/
         ->where('users.id',$userID)
-        ->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
+        ->where('proceso.IdProceso',$proces)
+        //->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
         ->get();
         $carta_ace  = ['carta_aceptacion' => $carta_aceptacion];
         $carta_lib = ['carta_liberacion' => $carta_liberacion];
@@ -156,22 +171,26 @@ class Estancia1Controller extends Controller
 
         //datos f01 doc
         $carta_presentacion =DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+        /*->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
         ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
         ->join('carta_presentacion','carta_presentacion.id','=','documentos.id_c_presentacion')
-        ->select('documentos.id_c_presentacion as id','carta_presentacion.nombre_c_p','carta_presentacion.estado_c_p','carta_presentacion.observaciones_c_p','respuesta_doc.id_documentos','users.name')
+        ->select('documentos.id_c_presentacion as id','carta_presentacion.nombre_c_p','carta_presentacion.estado_c_p','carta_presentacion.observaciones_c_p','respuesta_doc.id_documentos','users.name')*/
         ->where('users.id',$userID)
-        ->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
+        ->where('proceso.IdProceso',$proces)
+        //->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
         ->get();
 
         //carga horaria doc
         $carga_horaria=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+        /*->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
         ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
         ->join('carga_horaria','carga_horaria.id','=','documentos.id_c_horaria')
-        ->select('documentos.id_c_horaria as id','carga_horaria.nombre_c_h','carga_horaria.estado_c_h','carga_horaria.observaciones_c_h','respuesta_doc.id_documentos','users.name')
+        ->select('documentos.id_c_horaria as id','carga_horaria.nombre_c_h','carga_horaria.estado_c_h','carga_horaria.observaciones_c_h','respuesta_doc.id_documentos','users.name')*/
         ->where('users.id',$userID)
-        ->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
+        ->where('proceso.IdProceso',$proces)
+        //->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
         ->get();
         $carta_p = ['carta_presentacion' => $carta_presentacion];
         $carga_h = ['carga_horaria' => $carga_horaria];
@@ -179,22 +198,26 @@ class Estancia1Controller extends Controller
 
         //constancia_derecho doc
         $constancia_derecho =DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+        /*->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
         ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
         ->join('constancia_derecho','constancia_derecho.id','=','documentos.id_c_derecho')
-        ->select('documentos.id_c_derecho as id','constancia_derecho.nombre_c_d','constancia_derecho.estado_c_d','constancia_derecho.observaciones_c_d','respuesta_doc.id_documentos','users.name')
+        ->select('documentos.id_c_derecho as id','constancia_derecho.nombre_c_d','constancia_derecho.estado_c_d','constancia_derecho.observaciones_c_d','respuesta_doc.id_documentos','users.name')*/
         ->where('users.id',$userID)
-        ->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
+        ->where('proceso.IdProceso',$proces)
+        //->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
         ->get();
 
         //carta_responsiva doc
         $carta_responsiva=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+        /*->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
         ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
         ->join('carta_responsiva','carta_responsiva.id','=','documentos.id_c_responsiva')
-        ->select('documentos.id_c_responsiva as id','carta_responsiva.nombre_c_r','carta_responsiva.estado_c_r','carta_responsiva.observaciones_c_r','respuesta_doc.id_documentos','users.name')
+        ->select('documentos.id_c_responsiva as id','carta_responsiva.nombre_c_r','carta_responsiva.estado_c_r','carta_responsiva.observaciones_c_r','respuesta_doc.id_documentos','users.name')*/
         ->where('users.id',$userID)
-        ->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
+        ->where('proceso.IdProceso',$proces)
+        //->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
         ->get();
         $constancia_d = ['constancia_derecho' => $constancia_derecho];
         $carta_r = ['carta_responsiva' => $carta_responsiva];
@@ -202,124 +225,151 @@ class Estancia1Controller extends Controller
 
         //datos f01 doc
         $carta_compromiso =DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+        /*->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
         ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
         ->join('carta_compromiso','carta_compromiso.id','=','documentos.id_c_compromiso')
-        ->select('documentos.id_c_compromiso as id','carta_compromiso.nombre_c_c','carta_compromiso.estado_c_c','carta_compromiso.observaciones_c_c','respuesta_doc.id_documentos','users.name')
+        ->select('documentos.id_c_compromiso as id','carta_compromiso.nombre_c_c','carta_compromiso.estado_c_c','carta_compromiso.observaciones_c_c','respuesta_doc.id_documentos','users.name')*/
         ->where('users.id',$userID)
-        ->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
+        ->where('proceso.IdProceso',$proces)
+        //->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
         ->get();
     
         //datos f01 doc
         $reporte_mensual =DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+        /*->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
         ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
         ->join('reporte_mensual','reporte_mensual.id','=','documentos.id_r_mensual')
-        ->select('documentos.id_r_mensual as id','reporte_mensual.nombre_r_m','reporte_mensual.estado_r_m','reporte_mensual.observaciones_r_m','respuesta_doc.id_documentos','users.name')
+        ->select('documentos.id_r_mensual as id','reporte_mensual.nombre_r_m','reporte_mensual.estado_r_m','reporte_mensual.observaciones_r_m','respuesta_doc.id_documentos','users.name')*/
         ->where('users.id',$userID)
-        ->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
+        ->where('proceso.IdProceso',$proces)
+        //->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
         ->get();
 
         $reporte_mensual2 =DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+        /*->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
         ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
         ->join('reporte_mensual2','reporte_mensual2.id','=','documentos.id_r_mensual2')
-        ->select('documentos.id_r_mensual2 as id','reporte_mensual2.nombre_r_m','reporte_mensual2.estado_r_m','reporte_mensual2.observaciones_r_m','respuesta_doc.id_documentos','users.name')
+        ->select('documentos.id_r_mensual2 as id','reporte_mensual2.nombre_r_m','reporte_mensual2.estado_r_m','reporte_mensual2.observaciones_r_m','respuesta_doc.id_documentos','users.name')*/
         ->where('users.id',$userID)
-        ->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
+        ->where('proceso.IdProceso',$proces)
+        //->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
         ->get();
 
         $reporte_mensual3 =DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+        /*->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
         ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
         ->join('reporte_mensual3','reporte_mensual3.id','=','documentos.id_r_mensual3')
-        ->select('documentos.id_r_mensual3 as id','reporte_mensual3.nombre_r_m','reporte_mensual3.estado_r_m','reporte_mensual3.observaciones_r_m','respuesta_doc.id_documentos','users.name')
+        ->select('documentos.id_r_mensual3 as id','reporte_mensual3.nombre_r_m','reporte_mensual3.estado_r_m','reporte_mensual3.observaciones_r_m','respuesta_doc.id_documentos','users.name')*/
         ->where('users.id',$userID)
-        ->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
+        ->where('proceso.IdProceso',$proces)
+        //->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
         ->get();
 
         $reporte_mensual4 =DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+        /*->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
         ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
         ->join('reporte_mensual4','reporte_mensual4.id','=','documentos.id_r_mensual4')
-        ->select('documentos.id_r_mensual4 as id','reporte_mensual4.nombre_r_m','reporte_mensual4.estado_r_m','reporte_mensual4.observaciones_r_m','respuesta_doc.id_documentos','users.name')
+        ->select('documentos.id_r_mensual4 as id','reporte_mensual4.nombre_r_m','reporte_mensual4.estado_r_m','reporte_mensual4.observaciones_r_m','respuesta_doc.id_documentos','users.name')*/
         ->where('users.id',$userID)
-        ->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
+        ->where('proceso.IdProceso',$proces)
+        //->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
         ->get();
 
         $reporte_mensual5 =DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+        /*->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
         ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
         ->join('reporte_mensual5','reporte_mensual5.id','=','documentos.id_r_mensual5')
-        ->select('documentos.id_r_mensual5 as id','reporte_mensual5.nombre_r_m','reporte_mensual5.estado_r_m','reporte_mensual5.observaciones_r_m','respuesta_doc.id_documentos','users.name')
+        ->select('documentos.id_r_mensual5 as id','reporte_mensual5.nombre_r_m','reporte_mensual5.estado_r_m','reporte_mensual5.observaciones_r_m','respuesta_doc.id_documentos','users.name')*/
         ->where('users.id',$userID)
-        ->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
+        ->where('proceso.IdProceso',$proces)
+        //->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
         ->get();
 
         $reporte_mensual6 =DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+        /*->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
         ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
         ->join('reporte_mensual6','reporte_mensual6.id','=','documentos.id_r_mensual6')
-        ->select('documentos.id_r_mensual6 as id','reporte_mensual6.nombre_r_m','reporte_mensual6.estado_r_m','reporte_mensual6.observaciones_r_m','respuesta_doc.id_documentos','users.name')
+        ->select('documentos.id_r_mensual6 as id','reporte_mensual6.nombre_r_m','reporte_mensual6.estado_r_m','reporte_mensual6.observaciones_r_m','respuesta_doc.id_documentos','users.name')*/
         ->where('users.id',$userID)
-        ->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
+        ->where('proceso.IdProceso',$proces)
+        //->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
         ->get();
 
         $reporte_mensual7 =DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+        /*->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
         ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
         ->join('reporte_mensual7','reporte_mensual7.id','=','documentos.id_r_mensual7')
-        ->select('documentos.id_r_mensual7 as id','reporte_mensual7.nombre_r_m','reporte_mensual7.estado_r_m','reporte_mensual7.observaciones_r_m','respuesta_doc.id_documentos','users.name')
+        ->select('documentos.id_r_mensual7 as id','reporte_mensual7.nombre_r_m','reporte_mensual7.estado_r_m','reporte_mensual7.observaciones_r_m','respuesta_doc.id_documentos','users.name')*/
         ->where('users.id',$userID)
-        ->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
+        ->where('proceso.IdProceso',$proces)
+        //->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
         ->get();
 
         $reporte_mensual8 =DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+        /*->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
         ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
         ->join('reporte_mensual8','reporte_mensual8.id','=','documentos.id_r_mensual8')
-        ->select('documentos.id_r_mensual8 as id','reporte_mensual8.nombre_r_m','reporte_mensual8.estado_r_m','reporte_mensual8.observaciones_r_m','respuesta_doc.id_documentos','users.name')
+        ->select('documentos.id_r_mensual8 as id','reporte_mensual8.nombre_r_m','reporte_mensual8.estado_r_m','reporte_mensual8.observaciones_r_m','respuesta_doc.id_documentos','users.name')*/
         ->where('users.id',$userID)
-        ->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
+        ->where('proceso.IdProceso',$proces)
+        //->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
         ->get();
 
         $reporte_mensual9 =DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+        /*->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
         ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
         ->join('reporte_mensual9','reporte_mensual9.id','=','documentos.id_r_mensual9')
-        ->select('documentos.id_r_mensual9 as id','reporte_mensual9.nombre_r_m','reporte_mensual9.estado_r_m','reporte_mensual9.observaciones_r_m','respuesta_doc.id_documentos','users.name')
+        ->select('documentos.id_r_mensual9 as id','reporte_mensual9.nombre_r_m','reporte_mensual9.estado_r_m','reporte_mensual9.observaciones_r_m','respuesta_doc.id_documentos','users.name')*/
         ->where('users.id',$userID)
-        ->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
+        ->where('proceso.IdProceso',$proces)
+        //->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
         ->get();
 
         $reporte_mensual10 =DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+        /*->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
         ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
         ->join('reporte_mensual10','reporte_mensual10.id','=','documentos.id_r_mensual10')
-        ->select('documentos.id_r_mensual10 as id','reporte_mensual10.nombre_r_m','reporte_mensual10.estado_r_m','reporte_mensual10.observaciones_r_m','respuesta_doc.id_documentos','users.name')
+        ->select('documentos.id_r_mensual10 as id','reporte_mensual10.nombre_r_m','reporte_mensual10.estado_r_m','reporte_mensual10.observaciones_r_m','respuesta_doc.id_documentos','users.name')*/
         ->where('users.id',$userID)
-        ->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
+        ->where('proceso.IdProceso',$proces)
+        //->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
         ->get();
 
         $reporte_mensual11 =DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+        /*->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
         ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
         ->join('reporte_mensual11','reporte_mensual11.id','=','documentos.id_r_mensual11')
-        ->select('documentos.id_r_mensual11 as id','reporte_mensual11.nombre_r_m','reporte_mensual11.estado_r_m','reporte_mensual11.observaciones_r_m','respuesta_doc.id_documentos','users.name')
+        ->select('documentos.id_r_mensual11 as id','reporte_mensual11.nombre_r_m','reporte_mensual11.estado_r_m','reporte_mensual11.observaciones_r_m','respuesta_doc.id_documentos','users.name')*/
         ->where('users.id',$userID)
-        ->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
+        ->where('proceso.IdProceso',$proces)
+        //->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
         ->get();
 
         $reporte_mensual12 =DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
+        ->join('proceso', 'proceso.idUsuario', '=', 'users.id')
+        /*->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
         ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
         ->join('reporte_mensual12','reporte_mensual12.id','=','documentos.id_r_mensual12')
-        ->select('documentos.id_r_mensual12 as id','reporte_mensual12.nombre_r_m','reporte_mensual12.estado_r_m','reporte_mensual12.observaciones_r_m','respuesta_doc.id_documentos','users.name')
+        ->select('documentos.id_r_mensual12 as id','reporte_mensual12.nombre_r_m','reporte_mensual12.estado_r_m','reporte_mensual12.observaciones_r_m','respuesta_doc.id_documentos','users.name')*/
         ->where('users.id',$userID)
-        ->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
+        ->where('proceso.IdProceso',$proces)
+        //->where('id_proceso',$proces) //cambio 1 para arreglar error de duplicacion de datos en estancia y estadia
         ->get();
 
-        $botones = DB::table('activar_botones')
+        //$botones = DB::table('activar_botones')
+        $botones = DB::table('periodo')
         ->get();
         
 
@@ -342,7 +392,7 @@ class Estancia1Controller extends Controller
         'documentos'=>$datos2,'etapas'=>$datos3,'carta_aceptacion'=>$datos4,
         'carta'=>$datos5,'carta1'=>$datos6,'proceso'=>$var,'noActivar'=>$noActivar,'documentos2'=>$datos14,'botones'=>$botones,'reporte_mensual2'=>$reporte_m2,
         'reporte_mensual3'=>$reporte_m3,'reporte_mensual4'=>$reporte_m4,'reporte_mensual5'=>$reporte_m5,'reporte_mensual6'=>$reporte_m6,'reporte_mensual7'=>$reporte_m7,
-        'reporte_mensual8'=>$reporte_m8,'reporte_mensual9'=>$reporte_m9,'reporte_mensual10'=>$reporte_m10,'reporte_mensual11'=>$reporte_m11,'reporte_mensual12'=>$reporte_m12]);
+    'reporte_mensual8'=>$reporte_m8,'reporte_mensual9'=>$reporte_m9,'reporte_mensual10'=>$reporte_m10,'reporte_mensual11'=>$reporte_m11,'reporte_mensual12'=>$reporte_m12]);
     }
     //subir documento sin datos carga horaria
     public function subir_carga_horaria_estancia1(Request $request, $name,$proces,$idDoc){//*funcional
