@@ -92,6 +92,9 @@ Route::get('/logout', [LoginController::class, 'destroy'])
     ->middleware('auth.admin')
     ->name('adminPeriodoCrear.index');
 
+    Route::match(['post','get'],'/modificarFase_{id}',[documentosEstancia1AdminController::class,'cambiarPeriodo'])
+    ->middleware('auth.admin')
+    ->name('adminActivarFase.index');
 //Ver usuarios
     // Route::get('/usuarios/table', [UsuariosController::class, 'armar'])
     // ->name('usuarios/table.index') //Para usar con data tables

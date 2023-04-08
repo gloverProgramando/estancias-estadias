@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-      <img src="{{ asset("css/logo upqroo.png")}}" alt="" width="10%" height="10%">
+        <img src="{{ asset('css/logo upqroo.png') }}" alt="" width="10%" height="10%">
         <a class="navbar-brand" href="">Bienvenido: {{ auth()->user()->name }}</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,10 +27,9 @@
                                 Estadías nacional</a></li>
                         <li><a class="dropdown-item" href="{{ route('documentoEstancia1Admin.index', [5]) }}"> Registros
                                 Servicio social</a></li>
-                        <li><a class="dropdown-item" href="{{ route('activar_botones.index') }}">Activar Subida De
-                                Archivos</a></li>
-                        <li><a class="dropdown-item" href="{{ route('datatabledetallada.index') }}">Registro alumno-empresas</a></li>
-                        <li><a class="dropdown-item" href="{{route('adminPeriodo.index')}}">Crear Periodo</a></li>
+                        <li><a class="dropdown-item" href="{{ route('datatabledetallada.index') }}">Registro
+                                alumno-empresas</a></li>
+                        <li><a class="dropdown-item" href="{{ route('adminPeriodo.index') }}">Crear Periodo</a></li>
                     </ul>
                 </li>
                 <li class="nav-item">

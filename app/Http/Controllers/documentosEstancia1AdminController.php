@@ -23,7 +23,26 @@ class documentosEstancia1AdminController extends Controller
     public function periodo(){
         $fases = DB::table('fases')
         ->get();
-        return view('admin.crear_periodo',compact('fases'));
+        $periodos = DB::table('periodo')
+        ->get();
+        return view('admin.crear_periodo',compact('fases','periodos'));
+    }
+
+    public function cambiarPeriodo($IdPeriodo) {
+        $periodo = Periodo::find($IdPeriodo);
+        $periodos = DB::table('periodo')
+        ->get();
+        $fases = DB::table('fases')
+        ->get();
+        if($periodo){
+            $activo = $periodo->Activo == 1 ? 0 : 1;
+            $periodo->Activo = $activo;
+            $periodo->save();
+            $mensaje = $activo == 0 ? 'La fase ha sido desactivada' : 'La fase ha sido activada';
+            return redirect()->to('/Periodo')->with('success',$mensaje , compact('fases','periodos'));
+        } else {
+            return redirect()->to('/Periodo')->with('error', 'No se encontró el periodo', compact('fases','periodos'));
+        }
     }
 
     public function crearPeriodo(Request $request){
@@ -37,6 +56,10 @@ class documentosEstancia1AdminController extends Controller
             $numero = $anio . '02';
         } else {
             $numero = $anio . '03';
+        }
+        $periodoExistente = Periodo::where('Periodo',$numero)->first();
+        if($periodoExistente){
+            return redirect()->to('/Periodo')->with('error','Periodo: '.$numero.' ya existe, si quiere activar las etapas, favor de hacerlo en la parte de abajo');
         }
         for ($i = 1; $i <= 3; $i++) {
             $periodo = new Periodo;
@@ -118,75 +141,6 @@ class documentosEstancia1AdminController extends Controller
         'Definicion de Proyecto','Carta de Liberacion','Carta Compromiso','Reporte Mensual','Reporte Mensual',
         'Reporte Mensual','Reporte Mensual','Reporte Mensual','Reporte Mensual','Reporte Mensual',
         'Reporte Mensual','Reporte Mensual','Reporte Mensual','Reporte Mensual','Reporte Mensual'];
-        switch ($doc) {
-            case 1:$carta=carga_horaria::find($id);
-            $carta->estado_c_h=2;
-                break;
-            case 2:$carta=constancia_derecho::find($id);
-            $carta->estado_c_d=2;
-                break;
-            case 3:$carta=carta_responsiva::find($id);
-            $carta->estado_c_r=2;
-                break;
-            case 4:$carta=carta_presentacion::find($id);
-            $carta->estado_c_p=2;
-                break;
-            case 5:$carta=carta_aceptacion::find($id);
-            $carta->estado=2;
-                break;
-            case 6:$carta=cedula_registro::find($id);
-            $carta->estado_c_r=2;
-                break;
-            case 7:$carta=definicion_proyecto::find($id);
-            $carta->estado_d_p=2;
-                break;
-            case 8:$carta=carta_liberacion::find($id);
-            $carta->estado_c_l=2;
-                break;
-            case 9:$carta=carta_compromiso::find($id);
-            $carta->estado_c_c=2;
-                break;
-            case 10:$carta=reporte_mensual::find($id);
-            $carta->estado_r_m=2;
-                break;
-            case 11:$carta=reporte_mensual2::find($id);
-            $carta->estado_r_m=2;
-                break;
-            case 12:$carta=reporte_mensual3::find($id);
-            $carta->estado_r_m=2;
-                break;
-            case 13:$carta=reporte_mensual4::find($id);
-            $carta->estado_r_m=2;
-                break;
-            case 14:$carta=reporte_mensual5::find($id);
-            $carta->estado_r_m=2;
-                break;
-            case 15:$carta=reporte_mensual6::find($id);
-            $carta->estado_r_m=2;
-                break;
-            case 16:$carta=reporte_mensual7::find($id);
-            $carta->estado_r_m=2;
-                break;
-            case 17:$carta=reporte_mensual8::find($id);
-            $carta->estado_r_m=2;
-                break;
-            case 18:$carta=reporte_mensual9::find($id);
-            $carta->estado_r_m=2;
-                break;
-            case 19:$carta=reporte_mensual10::find($id);
-            $carta->estado_r_m=2;
-                break;
-            case 20:$carta=reporte_mensual11::find($id);
-            $carta->estado_r_m=2;
-                break;
-            case 21:$carta=reporte_mensual12::find($id);
-            $carta->estado_r_m=2;
-                break;
-            default:
-                # code...
-                break;
-        }
-        $carta->save();
         $resp=$name[$doc-1].' Aceptada y '.CorreoController::store($idU, $name[$doc-1],1);
         return back()->withInput()->with('aceptado',$resp);
     }
@@ -201,75 +155,6 @@ class documentosEstancia1AdminController extends Controller
         'Definicion de Proyecto','Carta de Liberacion','Carta Compromiso','Reporte Mensual','Reporte Mensual',
         'Reporte Mensual','Reporte Mensual','Reporte Mensual','Reporte Mensual','Reporte Mensual',
         'Reporte Mensual','Reporte Mensual','Reporte Mensual','Reporte Mensual','Reporte Mensual'];
-        switch ($doc) {
-            case 1:$carta=carga_horaria::find($id);
-            $carta->estado_c_h=1;
-                break;
-            case 2:$carta=constancia_derecho::find($id);
-            $carta->estado_c_d=1;
-                break;
-            case 3:$carta=carta_responsiva::find($id);
-            $carta->estado_c_r=1;
-                break;
-            case 4:$carta=carta_presentacion::find($id);
-            $carta->estado_c_p=1;
-                break;
-            case 5:$carta=carta_aceptacion::find($id);
-            $carta->estado=1;
-                break;
-            case 6:$carta=cedula_registro::find($id);
-            $carta->estado_c_r=1;
-                break;
-            case 7:$carta=definicion_proyecto::find($id);
-            $carta->estado_d_p=1;
-                break;
-            case 8:$carta=carta_liberacion::find($id);
-            $carta->estado_c_l=1;
-                break;
-            case 9:$carta=carta_compromiso::find($id);
-            $carta->estado_c_c=1;
-                break;
-            case 10:$carta=reporte_mensual::find($id);
-            $carta->estado_r_m=1;
-                break;
-            case 11:$carta=reporte_mensual2::find($id);
-            $carta->estado_r_m=1;
-                break;
-            case 12:$carta=reporte_mensual3::find($id);
-            $carta->estado_r_m=1;
-                break;
-            case 13:$carta=reporte_mensual4::find($id);
-            $carta->estado_r_m=1;
-                break;
-            case 14:$carta=reporte_mensual5::find($id);
-            $carta->estado_r_m=1;
-                break;
-            case 15:$carta=reporte_mensual6::find($id);
-            $carta->estado_r_m=1;
-                break;
-            case 16:$carta=reporte_mensual7::find($id);
-            $carta->estado_r_m=1;
-                break;
-            case 17:$carta=reporte_mensual8::find($id);
-            $carta->estado_r_m=1;
-                break;
-            case 18:$carta=reporte_mensual9::find($id);
-            $carta->estado_r_m=1;
-                break;
-            case 19:$carta=reporte_mensual10::find($id);
-            $carta->estado_r_m=1;
-                break;
-            case 20:$carta=reporte_mensual11::find($id);
-            $carta->estado_r_m=1;
-                break;
-            case 21:$carta=reporte_mensual12::find($id);
-            $carta->estado_r_m=1;
-                break;
-            default:
-                # code...
-                break;
-        }
-        $carta->save();
         return back()->withInput()->with('pendiente',$name[$doc-1].' Pendiente');
     }
     //vista observaciones carga horaria
@@ -286,157 +171,13 @@ class documentosEstancia1AdminController extends Controller
         $id_c   = [ $request->input('id_c')];
         $id_c_r   = ['id_c'=>$request->input('id_c'),'#proces'=>$proces,'#doc'=>$doc];
         $datos = Arr::collapse([$id_c_r]);
-        switch ($doc) {
-            case 1:$carta=carga_horaria::find($id_c);
-                break;
-            case 2:$carta=constancia_derecho::find($id_c);
-                break;
-            case 3:$carta=carta_responsiva::find($id_c);
-                break;
-            case 4:$carta=carta_presentacion::find($id_c);
-                break;
-            case 5:$carta=carta_aceptacion::find($id_c);
-                break;
-            case 6:$carta=cedula_registro::find($id_c);
-                break;
-            case 7:$carta=definicion_proyecto::find($id_c);
-                break;
-            case 8:$carta=carta_liberacion::find($id_c);
-                break;
-            case 9:$carta=carta_compromiso::find($id_c);
-                break;
-            case 10:$carta=reporte_mensual::find($id_c);
-                break;
-            case 11:$carta=reporte_mensual2::find($id_c);
-                break;
-            case 12:$carta=reporte_mensual3::find($id_c);
-                break;
-            case 13:$carta=reporte_mensual4::find($id_c);
-                break;
-            case 14:$carta=reporte_mensual5::find($id_c);
-                break;
-            case 15:$carta=reporte_mensual6::find($id_c);
-                break;
-            case 16:$carta=reporte_mensual7::find($id_c);
-                break;
-            case 17:$carta=reporte_mensual8::find($id_c);
-                break;
-            case 18:$carta=reporte_mensual9::find($id_c);
-                break;
-            case 19:$carta=reporte_mensual10::find($id_c);
-                break;
-            case 20:$carta=reporte_mensual11::find($id_c);
-                break;
-            case 21:$carta=reporte_mensual12::find($id_c);
-                break;
-            default:
-                # code...
-                break;
-        }
-        return view('admin.conObservaciones_estancia_carga_horaria',['datos'=>$carta,'id'=>$datos]);
+        return view('admin.conObservaciones_estancia_carga_horaria',[]);
     }
     //guardar carga horaria->manda correo
     public function  guardarObservaciones_documento_admin(Request $request,$id, $idU,$proces,$doc){//*funcion optimizada
-        $observacion= $request->input('observaciones');
-        $name=['Carga Horaria','Constancia de Derecho',
-        'Carta Responsiva','Carta de Presentación',
-        'Carta de Aceptacion','Cedula de Registro',
-        'Definicion de Proyecto','Carta de Liberacion','Carta Compromiso','Reporte Mensual','Reporte Mensual',
-        'Reporte Mensual','Reporte Mensual','Reporte Mensual','Reporte Mensual','Reporte Mensual',
-        'Reporte Mensual','Reporte Mensual','Reporte Mensual','Reporte Mensual','Reporte Mensual'];
-        switch ($doc) {
-            case 1:$carta=carga_horaria::find($id);
-            $carta->estado_c_h=0;
-            $carta->observaciones_c_h=$observacion;
-                break;
-            case 2:$carta=constancia_derecho::find($id);
-            $carta->estado_c_d=0;
-            $carta->observaciones_c_d=$observacion;
-                break;
-            case 3:$carta=carta_responsiva::find($id);
-            $carta->estado_c_r=0;
-            $carta->observaciones_c_r=$observacion;
-                break;
-            case 4:$carta=carta_presentacion::find($id);
-            $carta->estado_c_p=0;
-            $carta->observaciones_c_p=$observacion;
-                break;
-            case 5:$carta=carta_aceptacion::find($id);
-            $carta->estado=0;
-            $carta->observaciones=$observacion;
-                break;
-            case 6:$carta=cedula_registro::find($id);
-            $carta->estado_c_r=0;
-            $carta->observaciones_c_r=$observacion;
-                break;
-            case 7:$carta=definicion_proyecto::find($id);
-            $carta->estado_d_p=0;
-            $carta->observaciones_d_p=$observacion;
-                break;
-            case 8:$carta=carta_liberacion::find($id);
-            $carta->estado_c_l=0;
-            $carta->observaciones_c_l=$observacion;
-                break;
-            case 9:$carta=carta_compromiso::find($id);
-            $carta->estado_c_c=0;
-            $carta->observaciones_c_c=$observacion;
-                break;
-            case 10:$carta=reporte_mensual::find($id);
-            $carta->estado_r_m=0;
-            $carta->observaciones_r_m=$observacion;
-                break;
-            case 11:$carta=reporte_mensual2::find($id);
-            $carta->estado_r_m=0;
-            $carta->observaciones_r_m=$observacion;
-                break;
-            case 12:$carta=reporte_mensual3::find($id);
-            $carta->estado_r_m=0;
-            $carta->observaciones_r_m=$observacion;
-                break;
-            case 13:$carta=reporte_mensual4::find($id);
-            $carta->estado_r_m=0;
-            $carta->observaciones_r_m=$observacion;
-                break;
-            case 14:$carta=reporte_mensual5::find($id);
-            $carta->estado_r_m=0;
-            $carta->observaciones_r_m=$observacion;
-                break;
-            case 15:$carta=reporte_mensual6::find($id);
-            $carta->estado_r_m=0;
-            $carta->observaciones_r_m=$observacion;
-                break;
-            case 16:$carta=reporte_mensual7::find($id);
-            $carta->estado_r_m=0;
-            $carta->observaciones_r_m=$observacion;
-                break;
-            case 17:$carta=reporte_mensual8::find($id);
-            $carta->estado_r_m=0;
-            $carta->observaciones_r_m=$observacion;
-                break;
-            case 18:$carta=reporte_mensual9::find($id);
-            $carta->estado_r_m=0;
-            $carta->observaciones_r_m=$observacion;
-                break;
-            case 19:$carta=reporte_mensual10::find($id);
-            $carta->estado_r_m=0;
-            $carta->observaciones_r_m=$observacion;
-                break;
-            case 20:$carta=reporte_mensual11::find($id);
-            $carta->estado_r_m=0;
-            $carta->observaciones_r_m=$observacion;
-                break;
-            case 21:$carta=reporte_mensual12::find($id);
-            $carta->estado_r_m=0;
-            $carta->observaciones_r_m=$observacion;
-                break;
-            default:
-                # code...
-                break;
-        }
-        $carta->save();
-        $resp=$name[$doc-1].' con Observación y '.CorreoController::storeob($idU, $name[$doc-1],2,$observacion);
+ 
         if(Session("url_return")){
-            return redirect(Session("url_return"))->with('Con Observacion',$resp);
+            return redirect(Session("url_return"))->with('Con Observacion');
             $request->session()->put('url_return', null);
         }
     }
@@ -480,189 +221,7 @@ class documentosEstancia1AdminController extends Controller
         $docs   = ['documentos' => $documentos];
         $datos = Arr::collapse([$users1,$docs]);
 
-        $doc_f02 = DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('carta_aceptacion','documentos.id_c_aceptacion','=','carta_aceptacion.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-
-        $doc_f04=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('definicion_proyecto','documentos.id_d_proyecto','=','definicion_proyecto.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-
-        $c_a   = ['carta_aceptacion' => $doc_f02];
-        $d_p   = ['definicion_proyecto' => $doc_f04];
-        $datos1 = Arr::collapse([$c_a,$d_p]);
-
-        $doc_f03=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('cedula_registro','documentos.id_c_registro','=','cedula_registro.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        $doc_f05=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('carta_liberacion','documentos.id_c_liberacion','=','carta_liberacion.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        $c_l   = ['carta_liberacion' => $doc_f05];
-        $c_r   = ['cedula_registro' => $doc_f03];
-        $datos2 = Arr::collapse([$c_l,$c_r]);
-
-        $doc_carta_presentacion=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('carta_presentacion','documentos.id_c_presentacion','=','carta_presentacion.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        $doc_carga_horaria=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('carga_horaria','documentos.id_c_horaria','=','carga_horaria.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        $c_p   = ['carta_presentacion' => $doc_carta_presentacion];
-        $c_h   = ['carga_horaria' => $doc_carga_horaria];
-        $datos3 = Arr::collapse([$c_p,$c_h]);
-
-        $doc_constancia_derecho=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('constancia_derecho','documentos.id_c_derecho','=','constancia_derecho.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        $doc_carta_responsiva=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('carta_responsiva','documentos.id_c_responsiva','=','carta_responsiva.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        $c_d   = ['constancia_derecho' => $doc_constancia_derecho];
-        $c_res   = ['carta_responsiva' => $doc_carta_responsiva];
-        $datos4 = Arr::collapse([$c_d,$c_res]);
-
-        $doc_carta_compromiso=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('carta_compromiso','documentos.id_c_compromiso','=','carta_compromiso.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-
-        $doc_reporte_mensual=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual','documentos.id_r_mensual','=','reporte_mensual.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get(); 
-        
-        $doc_reporte_mensual2=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual2','documentos.id_r_mensual2','=','reporte_mensual2.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-                //datos reporte mensual mes 3
-        $doc_reporte_mensual3=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual3','documentos.id_r_mensual3','=','reporte_mensual3.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //datos reporte mensual mes 4
-        $doc_reporte_mensual4=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual4','documentos.id_r_mensual4','=','reporte_mensual4.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //datos reporte mensual mes 5
-        $doc_reporte_mensual5=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual5','documentos.id_r_mensual5','=','reporte_mensual5.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //datos reporte mensual mes 6
-        $doc_reporte_mensual6=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual6','documentos.id_r_mensual6','=','reporte_mensual6.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //datos reporte mensual mes 7
-        $doc_reporte_mensual7=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual7','documentos.id_r_mensual7','=','reporte_mensual7.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //datos reporte mensual mes 8
-        $doc_reporte_mensual8=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual8','documentos.id_r_mensual8','=','reporte_mensual8.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //datos reporte mensual mes 9
-        $doc_reporte_mensual9=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual9','documentos.id_r_mensual9','=','reporte_mensual9.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //datos reporte mensual mes 10
-        $doc_reporte_mensual10=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual10','documentos.id_r_mensual10','=','reporte_mensual10.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //datos reporte mensual mes 11
-        $doc_reporte_mensual11=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual11','documentos.id_r_mensual11','=','reporte_mensual11.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        //datos reporte mensual mes 12
-        $doc_reporte_mensual12=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
-        ->join('reporte_mensual12','documentos.id_r_mensual12','=','reporte_mensual12.id')
-        ->where('documentos.id_proceso',$proces)
-        ->get();
-        
-        $r_m   = ['reporte_mensual' => $doc_reporte_mensual];
-        $c_com   = ['carta_compromiso' => $doc_carta_compromiso];
-        $datos6 = Arr::collapse([$c_com,$r_m]);        
-
-        $reporte_mensual2 = ['reporte_mensual2' => $doc_reporte_mensual2];
-        $reporte_mensual3 = ['reporte_mensual3' => $doc_reporte_mensual3];
-        $reporte_mensual4 = ['reporte_mensual4' => $doc_reporte_mensual4];
-        $reporte_mensual5 = ['reporte_mensual5' => $doc_reporte_mensual5];
-        $reporte_mensual6 = ['reporte_mensual6' => $doc_reporte_mensual6];
-        $reporte_mensual7 = ['reporte_mensual7' => $doc_reporte_mensual7];
-        $reporte_mensual8 = ['reporte_mensual8' => $doc_reporte_mensual8];
-        $reporte_mensual9 = ['reporte_mensual9' => $doc_reporte_mensual9];
-        $reporte_mensual10 = ['reporte_mensual10' => $doc_reporte_mensual10];
-        $reporte_mensual11 = ['reporte_mensual11' => $doc_reporte_mensual11];
-        $reporte_mensual12 = ['reporte_mensual12' => $doc_reporte_mensual12];
-
-        $alumnos = DB::table('alumno')
-        ->where('id_procesos',$proces)
-        ->get();
-
-        return view('nombres.Buscar_estancia1',['nombres'=>$nombres,'texto'=>$texto,'estatus'=>$estatus,'año'=>$año,
-        'documentos'=>$users0,'documentos1'=>$datos,'documentos2'=>$datos1,'documentos3'=>$datos2,
-        'documentos4'=>$datos3,'documentos5'=>$datos4,'alumnos'=>$alumnos,'proceso'=>$var,'documentos6'=>$datos6,
-        'reporte_mensual2'=>$reporte_mensual2,'reporte_mensual3'=>$reporte_mensual3,'reporte_mensual4'=>$reporte_mensual4,'reporte_mensual5'=>$reporte_mensual5,
-        'reporte_mensual6'=>$reporte_mensual6,'reporte_mensual7'=>$reporte_mensual7,'reporte_mensual8'=>$reporte_mensual8,'reporte_mensual9'=>$reporte_mensual9,'reporte_mensual10'=>$reporte_mensual10,
-        'reporte_mensual11'=>$reporte_mensual11,'reporte_mensual12'=>$reporte_mensual12]);
+        return view('nombres.Buscar_estancia1',[]);
     }
 
     //buscar usuario lleno cedula de registro
