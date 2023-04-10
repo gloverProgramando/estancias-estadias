@@ -12,6 +12,7 @@ class proceso extends Model
     use HasFactory;
     protected $table = 'proceso';
     protected $primarykey = 'idProceso';
+    public $timestamps = false;
 
     public static function requestInsertDataProcess($data){
         try{

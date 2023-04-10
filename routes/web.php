@@ -250,6 +250,9 @@ Route::get('/logout', [LoginController::class, 'destroy'])
     ->name('reiniciarU.index')
     ->middleware('auth');
 
+    Route::match(['post', 'delete','put','get'],'/CrearPeriodo/{name}/{proces}',[Estancia1Controller::class, 'CrearPeriodoAlumno'])
+    ->name('CrearProcesoAlumno.index');
+
 
 //formatos
 Route::match(['post','get'],'/estancia1/{Proces}', [Estancia1Controller::class, 'ver'])
@@ -261,13 +264,18 @@ Route::match(['post','get'],'/estancia1/{Proces}', [Estancia1Controller::class, 
     ->name('actualizar_docs.index');//*funcion optimizada
 
     //enviar documento carga horaria sin datos 
-    Route::match(['post', 'delete','put','get'],'subir/carga_horaria1/{name}/{proces}/{idDoc}', [Estancia1Controller::class, 'subir_carga_horaria_estancia1'])
+    Route::match(['post', 'delete','put','get'],'subir/carga_horaria1/{name}/{proces}/{IdTipoDoc}', [Estancia1Controller::class, 'subir_carga_horaria_estancia1'])
     ->name('subir_doc.index');//*funcion optimizada
 
+    Route::match(['post', 'delete','put','get'],'subir/carga_horaria1/{name}/{proces}/{idDoc}', [Estancia1Controller::class, 'subir_carga_horaria_estancia1'])
+    ->name('subir_doc_alumno.index');//*funcion optimizada
 
     //cancelar solicitud documento carga horaria
-    Route::match(['post', 'delete','put'], '/carga_horaria/{proces}/{id_docs}/{id_d}/{idDoc}',[PdfController::class,'cancelar_carga_horaria_Estancia'])
+    Route::match(['post', 'delete','put'], '/cancelar_documento_alumno/{proces}/{id_docs}',[Estancia1Controller::class,'cancelar_documento_alumno'])
     ->name('cancelar_doc.index');//*funcion optimizada
+
+    Route::match(['post', 'delete','put'], '/carga_horaria/{proces}/{id_docs}/{id_d}/{idDoc}',[Estancia1Controller::class,'cancelar_carga_horaria_Estancia'])
+    ->name('cancelar_doc_alumno.index');//*funcion optimizada
 //#
     
 
@@ -275,6 +283,8 @@ Route::match(['post','get'],'/estancia1/{Proces}', [Estancia1Controller::class, 
     Route::get('/descarga_cd_estancia_f01/{proces}', [DescargaController::class, 'descarga_carta_presentacion'])
     ->name('descarga_cd_estancia_f01.index');//*optimizado
 
+    Route::get('/descargarFormatos/{doc}', [DescargaController::class, 'DescargarFormatoDocumento'])
+    ->name('DescargarFormatoDocumento.index');//*optimizado
     
     //descargar con datos f02
     Route::get('/descarga_cd_estancia_f02/{proces}', [PdfController::class, 'descarga_cd_f02_estancia'])

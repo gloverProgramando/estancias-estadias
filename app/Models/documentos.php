@@ -12,7 +12,7 @@ class documentos extends Model
     use HasFactory;
     
     protected $table = 'documentos';
-    protected $primaryKey='id';
+    protected $primaryKey='IdDoc';
 
     public static function requestInsertDoc($data) {
 
@@ -33,7 +33,7 @@ class documentos extends Model
         }
     }
 
-    public static function insertDoc($data ) {
+    public static function insertDoc($data) {
 
         $arrayResponse = array();
 
@@ -43,7 +43,7 @@ class documentos extends Model
             $arrayResponse = array(
                 "code"      => 200,
                 "message"   => "Se ha agregado el registro",
-                "id"        => $docId
+                "IdDoc"        => $docId
             );
         } catch (Exception $e) {
             $arrayResponse = array(
@@ -53,9 +53,5 @@ class documentos extends Model
         }
 
         return $arrayResponse;
-    }
-
-    public function respuesta() {
-        return $this->hasMany(respuesta_doc::class);
     }
 }

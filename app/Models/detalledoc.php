@@ -12,13 +12,8 @@ use Exception;
 class detalledoc extends Model
 {
     protected $table = 'detalledoc';
-    protected $primaryKey='idDetalleDoccol';
-    $proceso=DB::table('Proceso')
-    join('Proceso','idProceso','=','Proceso_idProceso')
-    get();
-    $documentos=DB::table('Documentos')
-    join('Documentos','idDocumentos','=','Documentos_idDocumentos')
-    get();
+    protected $primaryKey='IdDoc';
+    public $timestamps = false;
 
     use HasFactory;
 
@@ -56,7 +51,7 @@ class detalledoc extends Model
             $arrayResponse = array(
                 "code"      => 200,
                 "message"   => "Se ha agragado el registro",
-                "id" => $detailsDocId
+                "IdDoc" => $detailsDocId
             );
         }catch (Exception $e) {
             $arrayResponse = array(
