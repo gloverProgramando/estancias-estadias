@@ -184,7 +184,16 @@ Route::get('/logout', [LoginController::class, 'destroy'])
          Route::match(['post','get'],'/ver_documento/{name}/{proces}', [documentosEstancia1AdminController::class, 'ver_documento'])
          ->name('ver_documento.index')//!ver documentos admin
          ->middleware('auth.admin');
- 
+         //*Cambiar estado doc
+         Route::match(['post','get','put'],'/aceptar_documento/admin/{idU}', [documentosEstancia1AdminController::class, 'Cambiar_Estado_Doc'])
+         ->name('Cambiar_documento_Estado.index');//!aceptar documentos admin
+         //*observacion
+         Route::match(['get','post','put'],'/observaciones_documento_admin/{idDoc}', [documentosEstancia1AdminController::class, 'observacion_documento_ver'])
+         ->name('observacion_documento_ver.index');
+         //*observacion guardar
+         Route::match(['get','post','put'],'/guardar_observaciones_documento_admin/{idDoc}', [documentosEstancia1AdminController::class, 'observacion_documento'])
+         ->name('observacion_documento.index');
+
          //*aceptar docs
          Route::match(['post','get','put'],'/aceptar_documento/admin/{idU}/{id}/{proces}/{doc}', [documentosEstancia1AdminController::class, 'aceptar_documento'])
          ->name('aceptar_documento.index');//!aceptar documentos admin

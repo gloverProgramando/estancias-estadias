@@ -52,7 +52,7 @@ class UsuariosController extends Controller
     }
     //eliminar usuario
     public function eliminarUsuario($id){
-        Users::find($id)->delete();
+        User::find($id)->delete();
         return redirect('usuarios')->with('eliminar','Usuario eliminado');
     }
 
@@ -63,7 +63,7 @@ class UsuariosController extends Controller
     }
     //restaurar usuario
     public function restaurarUsuario($id){
-        Users::withTrashed()->find($id)->restore();
+        User::withTrashed()->find($id)->restore();
         return redirect('usuarios')->with('restaurar','Usuario restaurado');
     }
     public function buscarUsuario(Request $request){

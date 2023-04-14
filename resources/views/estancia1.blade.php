@@ -84,11 +84,9 @@
                                             @break
 
                                             @case(3)
-                                                <a href="">
-                                                    <button type="submit" class="btn btn-outline-danger">
-                                                        <i class="zmdi zmdi-folder-person"> Observaciones</i>
-                                                    </button>
-                                                </a>
+                                                <button class="btn btn-outline-danger">
+                                                    <i class="zmdi zmdi-folder-person"> Observaciones</i>
+                                                </button>
                                             @break
 
                                             @default
@@ -113,14 +111,27 @@
                                     @if ($doc->IdTipoDoc == $documento->IdTipoDoc)
                                         @if ($doc->ruta == null)
                                         @else
-                                            <form action="{{route('cancelar_doc.index',[$proceso[0],$doc->IdDoc,])}}" method="POST" enctype="multipart/form-data">
+                                            <form action="{{ route('cancelar_doc.index', [$proceso[0], $doc->IdDoc]) }}"
+                                                method="POST" enctype="multipart/form-data">
                                                 @csrf
                                                 <input type="text" value="{{ $doc->ruta }}" class="nombreDoc"
                                                     id="nombreDoc" name="nombreDoc" readonly>
-                                                <button type="submit" class="btn btn-outline-danger btnCancelar">
-                                                    Cancelar
-                                                </button>
+                                                @if ($doc->IdEstado == 1)
+                                                @else
+                                                    <button type="submit" class="btn btn-outline-danger btnCancelar">
+                                                        Cancelar
+                                                    </button>
+                                                @endif
                                             </form>
+                                            @if ($doc->comentario)
+                                                <form
+                                                    action="{{ route('observacion_documento_ver.index', $doc->IdDoc) }}"
+                                                    class="d-flex"
+                                                    style="padding-left: 20%; padding-right: 20%; padding-top:1%;">
+                                                    <button type="submit"
+                                                        class="btn btn-danger btnObservaciones">Observacion</button>
+                                                </form>
+                                            @endif
                                         @endif
                                     @endif
                                 @endforeach

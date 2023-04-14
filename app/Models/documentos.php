@@ -13,6 +13,7 @@ class documentos extends Model
     
     protected $table = 'documentos';
     protected $primaryKey='IdDoc';
+    public $timestamps = false;
 
     public static function requestInsertDoc($data) {
 
