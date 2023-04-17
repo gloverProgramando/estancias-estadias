@@ -42,19 +42,25 @@
                 <form action="{{ route('CrearProcesoAlumno.index', [auth()->user()->id, $proceso[0]]) }}">
                     <div class="py-5">
                         <button class="btn btn-warning " type="submit">Darse De Alta En Periodo</button>
-                        <div class="d-flex" style="padding: 1%">
-                            <select class="form-control" name="asesorempresarial" id="asesorempresarial">
-                                <option value="">Seleccione un dato</option>
-                                @foreach ($ae as $empresarial)
-                                    <option value="{{$empresarial->IdAE}}">{{$empresarial->APP . " " . $empresarial->APM . " " . $empresarial->Nombre}}</option>
-                                @endforeach
-                            </select>
-                            <select class="form-control" name="asesoracademico" id="asesoracademico">
-                                <option value="">Seleccione un dato</option>
-                                @foreach ($aa as $academico)
-                                    <option value="{{$academico->IdAsesor}}">{{$academico->APP . " " . $academico->APM . " " . $academico->Nombre}}</option>
-                                @endforeach
-                            </select>
+                        <div class="row mt-3" style="padding: 1%">
+                            <div class="form-group col">
+                                <label class="form-label" for="asesorempresarial">Asesor Empresarial</label>
+                                <select class="form-control" name="asesorempresarial" id="asesorempresarial">
+                                    <option value="">Seleccionar un dato</option>
+                                    @foreach ($ae as $empresarial)
+                                        <option value="{{$empresarial->IdAE}}">{{$empresarial->APP . " " . $empresarial->APM . " " . $empresarial->Nombre}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col">
+                                <label class="form-label" for="asesoracademico">Asesor Academico</label>
+                                <select class="form-control" name="asesoracademico" id="asesoracademico">
+                                    <option value="">Seleccionar un dato</option>
+                                    @foreach ($aa as $academico)
+                                        <option value="{{$academico->IdAsesor}}">{{$academico->APP . " " . $academico->APM . " " . $academico->Nombre}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -64,7 +70,7 @@
             <table id="usuarios" class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Id Documento</th>
+                        <th style="display: none">Id Documento</th>
                         <th>Documento</th>
                         <th>Formato</th>
                         <th>Estado</th>
@@ -76,7 +82,7 @@
                         return $query->take(8);
                     }) as $documento)
                         <tr>
-                            <td>{{ $documento->IdTipoDoc }}</td>
+                            <td style="display: none">{{ $documento->IdTipoDoc }}</td>
                             <td>{{ $documento->nombredoc }}</td>
                             <td>
                                 <a href="{{ route('DescargarFormatoDocumento.index', $documento->IdTipoDoc) }}">

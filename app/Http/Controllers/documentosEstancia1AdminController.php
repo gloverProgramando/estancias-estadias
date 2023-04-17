@@ -7,12 +7,17 @@ use App\Models\User;
 use App\Models\Periodo;
 use App\Models\Fase;
 use App\Models\usuarios;
+use App\Models\Asesor_Aca;
+use App\Models\Asesor_Emp;
+use App\Models\ae_emp;
+use App\Models\Empresa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Arr;
 use Carbon\Carbon;
+use League\Csv\Reader;
 use RealRashid\SweetAlert\Facades\Alert;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\Auth;
@@ -306,5 +311,112 @@ class documentosEstancia1AdminController extends Controller
     public function observacion_documento_Ver($idDoc){
         $documento = documentos::find($idDoc);
         return view('admin.observaciones_estancia_carga_horaria',['documento'=>$documento]);
+    }
+    public function ver_csv_academico(){
+        return view('admin.asesores_agregar');
+    }
+    public function subir_csv_academico(Request $request){
+        if ($request->hasFile('csv_aa')) {
+            $csv = Reader::createFromPath($request->file('csv_aa')->path());
+            $csv->setHeaderOffset(0);
+            $batchSize = 1000; // Número de filas a procesar en cada lote
+            $records = $csv->getRecords();
+    
+            $batch = [];
+            $rowCount = 0;
+    
+            foreach ($records as $record) {
+                $asesor = Asesor_Aca::where('Nombre', $record['Nombre'])->first();
+                if (!$asesor) {
+                    $batch[] = [
+                        'Nombre' => $record['Nombre'],
+                        'APP' => $record['APP'],
+                        'APM' => $record['APM'],
+                        'IdGrado' => $record['IdGrado']
+                    ];
+                }
+                $rowCount++;
+                if ($rowCount == $batchSize) {
+                    Asesor_Aca::insert($batch);
+                    $batch = [];
+                    $rowCount = 0;
+                }
+            }
+    
+            // Procesa el último lote (si existe)
+            if ($rowCount > 0) {
+                Asesor_Aca::insert($batch);
+            }
+    
+            return redirect()->to('/Asesores')->with('success','asesores agregados');
+        }
+        return view('admin.asesores_agregar')->with('error','tuvo errores');
+    }
+
+    public function subir_csv_empresarial(Request $request){
+        if ($request->hasFile('csv_ae')) {
+            $csv = Reader::createFromPath($request->file('csv_ae')->path());
+            $csv->setHeaderOffset(0);
+            $batchSize = 1000; // Número de filas a procesar en cada lote
+            $records = $csv->getRecords();
+    
+            $batchAE = [];
+            $batchEmpresa = [];
+            $batchAE_Empresa = [];
+            $rowCount = 0;
+    
+            foreach ($records as $record) {
+                // Verificar si el asesor ya existe en la tabla Asesor_Emp
+                $ae = Asesor_Emp::where('Nombre', $record['Nombre'])->first();
+                if (!$ae) {
+                    $batchAE[] = [
+                        'Nombre' => $record['Nombre'],
+                        'APP' => $record['APP'],
+                        'APM' => $record['APM'],
+                        'Correo' => $record['Correo'],
+                        'IdGrado' => $record['IdGrado']
+                    ];
+                }
+    
+                // Verificar si la empresa ya existe en la tabla Empresa
+                $empresa = Empresa::where('Nombre', $record['Nombre_Emp'])->first();
+                if (!$empresa) {
+                    $batchEmpresa[] = [
+                        'Nombre' => $record['Nombre_Emp'],
+                        'Direccion' => $record['Direccion'],
+                        'Correo' => $record['Correo_emp'],
+                        'Telefono' => $record['Telefono']
+                    ];
+                }
+    
+                // Obtener el ID del asesor y el ID de la empresa (o crearlos si no existen)
+                $idAE = $ae ? $ae->IdAE : Asesor_Emp::insertGetId($batchAE[count($batchAE) - 1]);
+                $idEmpresa = $empresa ? $empresa->IdEmpresa : Empresa::insertGetId($batchEmpresa[count($batchEmpresa) - 1]);
+    
+                // Agregar la relación a la tabla ae_emp
+                $batchAE_Empresa[] = [
+                    'IdAE' => $idAE,
+                    'IdEmp' => $idEmpresa
+                ];
+    
+                $rowCount++;
+                if ($rowCount == $batchSize) {
+                    ae_emp::insert($batchAE_Empresa);
+                    $batchAE_Empresa = [];
+                    $rowCount = 0;
+                }
+            }
+    
+            // Procesar el último lote (si existe)
+            if ($rowCount > 0) {
+                Asesor_Emp::insert($batchAE);
+                Empresa::insert($batchEmpresa);
+                ae_emp::insert($batchAE_Empresa);
+            }
+    
+            return redirect()->to('/Asesores')->with('success','Asesores agregados');
+        }
+    
+        return view('admin.asesores_agregar')->with('error','El archivo CSV no se pudo procesar');
     }
 }

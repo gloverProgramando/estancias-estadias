@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
-class Aa extends Model
+class Asesor_Aca extends Model
 {
     use HasFactory;
     protected $table = 'aa';

@@ -92,6 +92,18 @@ Route::get('/logout', [LoginController::class, 'destroy'])
     ->middleware('auth.admin')
     ->name('adminPeriodoCrear.index');
 
+    Route::get('/Asesores',[documentosEstancia1AdminController::class,'ver_csv_academico'])
+    ->middleware('auth.admin')
+    ->name('asesores.index');
+
+    Route::match(['post','get'],'/Asesores_subir',[documentosEstancia1AdminController::class,'subir_csv_academico'])
+    ->middleware('auth.admin')
+    ->name('asesores_subir.index');
+
+    Route::match(['post','get'],'/Asesores_subir_E',[documentosEstancia1AdminController::class,'subir_csv_empresarial'])
+    ->middleware('auth.admin')
+    ->name('asesores_subir_E.index');
+
     Route::match(['post','get'],'/modificarFase_{id}',[documentosEstancia1AdminController::class,'cambiarPeriodo'])
     ->middleware('auth.admin')
     ->name('adminActivarFase.index');

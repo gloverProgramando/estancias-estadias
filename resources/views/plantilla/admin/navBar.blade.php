@@ -37,9 +37,11 @@
                     <a class="nav-link datosvin" href="{{ route('datos.index') }}">Datos Vinculados</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="{{ route('asesores.index') }}">Asesores</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{{ route('login.destroy') }}">Cerrar Sesión</a>
                 </li>
-
             </ul>
 
         </div>
