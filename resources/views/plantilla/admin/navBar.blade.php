@@ -27,8 +27,6 @@
                                 Estadías nacional</a></li>
                         <li><a class="dropdown-item" href="{{ route('documentoEstancia1Admin.index', [5]) }}"> Registros
                                 Servicio social</a></li>
-                        <li><a class="dropdown-item" href="{{ route('datatabledetallada.index') }}">Registro
-                                alumno-empresas</a></li>
                         <li><a class="dropdown-item" href="{{ route('adminPeriodo.index') }}">Crear Periodo</a></li>
                     </ul>
                 </li>

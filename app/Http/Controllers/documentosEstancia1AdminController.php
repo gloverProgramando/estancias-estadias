@@ -268,10 +268,6 @@ class documentosEstancia1AdminController extends Controller
         ->where('name','LIKE','%'.$texto.'%')
         ->orWhere('Nombre','LIKE','%'.$texto.'%')
         ->get();
-        $user =DB::table('users')
-        ->where('name','LIKE','%'.$texto.'%')
-        ->orWhere('Nombre','LIKE','%'.$texto.'%')
-        ->get();
         return view('nombres.Buscar_estancia1',['proceso'=>$var,'documentos'=>$tiposdocumentos,'documentacion'=>$documentos]);
     }
 

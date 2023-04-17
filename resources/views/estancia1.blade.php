@@ -42,6 +42,20 @@
                 <form action="{{ route('CrearProcesoAlumno.index', [auth()->user()->id, $proceso[0]]) }}">
                     <div class="py-5">
                         <button class="btn btn-warning " type="submit">Darse De Alta En Periodo</button>
+                        <div class="d-flex" style="padding: 1%">
+                            <select class="form-control" name="asesorempresarial" id="asesorempresarial">
+                                <option value="">Seleccione un dato</option>
+                                @foreach ($ae as $empresarial)
+                                    <option value="{{$empresarial->IdAE}}">{{$empresarial->APP . " " . $empresarial->APM . " " . $empresarial->Nombre}}</option>
+                                @endforeach
+                            </select>
+                            <select class="form-control" name="asesoracademico" id="asesoracademico">
+                                <option value="">Seleccione un dato</option>
+                                @foreach ($aa as $academico)
+                                    <option value="{{$academico->IdAsesor}}">{{$academico->APP . " " . $academico->APM . " " . $academico->Nombre}}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -58,7 +72,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($documentos as $documento)
+                    @foreach ($documentos->when($proceso[0] != 5, function ($query) {
+                        return $query->take(8);
+                    }) as $documento)
                         <tr>
                             <td>{{ $documento->IdTipoDoc }}</td>
                             <td>{{ $documento->nombredoc }}</td>

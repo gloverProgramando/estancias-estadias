@@ -11,6 +11,7 @@ class ae_emp extends Model
 {
     use HasFactory;
     protected $table = 'ae_emp';
+    public $timestamps = false;
 
 
     public static function requestInsertAe_emp($data) {

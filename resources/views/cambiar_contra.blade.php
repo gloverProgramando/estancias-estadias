@@ -42,6 +42,23 @@
                                     <label class="form-label" for="password">Contraseña</label>
                                 </div>
                             </div>
+                            <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center">
+                                <div class="form-outline mb-4">
+                                    <input type="text" id="Nombre"
+                                        class="form-control form-control-lg text-center" name="Nombre"
+                                        value="{{ auth()->user()->Nombre }}" />
+                                    <label class="form-label" for="name">Nombre Completo</label>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 text-center">
+                                <div class="form-outline mb-4">
+                                    <select name="carrera" id="carrera" class="form-control form-control-lg text-center">
+                                        @foreach ($carreras as $carrera)
+                                            <option value="{{$carrera->IdCarrera}}">{{$carrera->NombreCarrera}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
                             <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center">
                                 <div class="form-outline mb-4">
                                     <input type="email" id="email"

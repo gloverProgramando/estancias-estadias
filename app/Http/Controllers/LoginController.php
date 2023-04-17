@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\proceso;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -50,21 +51,26 @@ class LoginController extends Controller
     public function ver(){
         $userID=Auth::user()->id; 
         $cedula_doc=DB::table('users')
-        ->join('respuesta_doc','users.id','=','respuesta_doc.id_usuario')
-        ->join('documentos','documentos.id','=','respuesta_doc.id_documentos')
         ->where('users.id',$userID)
         ->get();
-        return view('cambiar_contra',['datos'=>$cedula_doc]);
+        $carreras = DB::table('carrera')
+        ->get();
+        return view('cambiar_contra',['datos'=>$cedula_doc,'carreras'=>$carreras]);
     }
     
     public function editar(Request $request){
         $this->validate(request(), [
-            'password' => 'required'
+            'password' => 'required',
         ]);
         $userID=Auth::user()->id;
+        $proceso = proceso::where('IdUsuario',$userID)->get();
+        foreach($proceso as $pro){
+            $pro->IdCarrera = request('carrera');
+            $pro->save();
+        }
         $user=User::find($userID);
         $user->password=request('password');
         $user->save();
-        return redirect()->to('/alumno_ver_editar')->with('success','Contraseña cambiada');
+        return redirect()->to('/alumno_ver_editar')->with('success','Datos cambiados');
     }
 }

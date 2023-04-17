@@ -11,6 +11,7 @@ class aa_pp extends Model
 {
     use HasFactory;
     protected $table = 'aa_pp';
+    public $timestamps = false;
 
 
     public static function requestInsertAa_pp($data) {

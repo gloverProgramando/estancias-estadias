@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 
 use App\Models\documentos;
+use App\Models\aa_pp;
+use App\Models\ae_pp;
 use App\Models\tipodoc;
 use App\Models\detalledoc;
 use App\Models\estadodoc;
@@ -21,7 +23,7 @@ use phpDocumentor\Reflection\Location;
 
 class Estancia1Controller extends Controller
 {
-    public function CrearPeriodoAlumno($idUsuario,$procesos){
+    public function CrearPeriodoAlumno(Request $request,$idUsuario,$procesos){
         $date = Carbon::now();
         $anio = Carbon::parse($date)->year;
         $mes = Carbon::parse($date)->month;
@@ -40,11 +42,26 @@ class Estancia1Controller extends Controller
             if($procesoExistente){
                 return redirect('estancia1/'. $procesos)->with('error','ya tienes un proceso con este periodo');
             }else{
+                $request->validate([
+                    'asesorempresarial' => 'required',
+                    'asesoracademico' => 'required',
+                ]);
+                $asesorEmpresarial = $request->input('asesorempresarial');
+                $asesorAcademico = $request->input('asesoracademico');
                 $proceso = new proceso;
                 $proceso->IdUsuario = $idUsuario;
                 $proceso->IdTipoProceso = $procesos;
                 $proceso->IdPeriodo = $periodoExistente->IdPeriodo;
                 $proceso->save();
+                $idProceso = $proceso->id;
+                $relacionAA = new aa_pp;
+                $relacionAA->IdAsesor = $asesorAcademico;
+                $relacionAA->IdProceso = $idProceso;
+                $relacionAA->save();
+                $relacionAE = new ae_pp;
+                $relacionAE->Idae = $asesorEmpresarial;
+                $relacionAE->IdProceso = $idProceso;
+                $relacionAE->save();
                 return redirect('estancia1/'. $procesos)->with('success','Dado de alta en periodo actual'); 
             }
         }
@@ -66,7 +83,9 @@ class Estancia1Controller extends Controller
         ->where('IdTipoProceso',$proces)
         ->where('IdUsuario',$userID)
         ->get();
-        return view('estancia1', ['proceso' => $var,'documentos' => $tiposdocumentos,'documentacion'=>$documentos]);
+        $asesoresEmpresariales = DB::table('ae')->get();
+        $asesoresAcademicos = DB::table('aa')->get();
+        return view('estancia1', ['proceso' => $var,'documentos' => $tiposdocumentos,'documentacion'=>$documentos,'ae' =>$asesoresEmpresariales,'aa' =>$asesoresAcademicos]);
     }
 
     //subir documento sin datos carga horaria
@@ -123,13 +142,7 @@ class Estancia1Controller extends Controller
                     $response_documentos = detalledoc::requestInsertDetailsDocs($data6); 
         
                     if (isset($response_documentos["code"]) && $response_documentos["code"] == 200) {
-                        $arrayResult = array(
-                            'Response_2'  => array(
-                                'ok'        => true,
-                                'message'   => "Se ha guardado el registro",
-                                'code'      => "200",
-                            ),
-                        );
+
                     } else {
                         $arrayResult = array(
                             'Response_2'  => array(

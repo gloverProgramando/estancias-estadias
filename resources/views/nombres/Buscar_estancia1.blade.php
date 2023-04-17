@@ -32,6 +32,9 @@
     <section class="full-box dashboard-contentPage">
         <div class="container p-3">
             <h2 class="text-center">Busqueda<small>({{ $proceso[1] }})</small></h2>
+            @foreach ($documentacion as $user)
+             <h2 class="text-center">{{$user->name}}</h2>                
+            @endforeach
         </div>
         <div class="table-responsive" style="padding: 2%;">
             <table id="usuarios" class="table table-striped">
