@@ -11,7 +11,7 @@
 		<!-- Content page -->
 		<div class="container p-3">
 			<div class="page-header">
-			  <h2 class="text-titles">Documentos Registrados<small>({{$proceso[1]}})</small></h2>
+			  <h2 class="text-center">Documentos Registrados<small>({{$proceso[1]}})</small></h2>
 			</div>
 		</div>
          <!---notificacion --->
@@ -19,7 +19,7 @@
             <div class="container">
                 <div class="row">
                     <div class=" col-12 col-sm-12 col-md-6">
-                        <form action="{{ route('Buscar_estancia1.index',[$proceso[0],$proceso[1]]) }}" method="GET">
+                        <form action="{{ route('Buscar_estancia1.index',[$proceso[0],$proceso[1]]) }}" class="text-center" method="GET">
                             @csrf
                             <!-- buscar-->
                             <div class="row">
@@ -31,29 +31,11 @@
                                 </div>
                                 <div class=" col-8 col-sm-8 col-md-6">
                                     <select class="form-control" id="estatus" name="estatus" placeholder="estatus">
-                                      <option value=""> </option>
-                                      <option value="enero-abril">enero-abril</option>
-                                      <option value="mayo-agosto">mayo-agosto</option>
-                                      <option value="septiembre-octubre">septiembre-diciembre</option>
+                                        <option value="">Seleccionar un periodo</option>
+                                        @foreach ($periodos as $periodo)
+                                            <option value="{{ $periodo->IdPeriodo }}">{{$periodo->Periodo}}</option>
+                                        @endforeach
                                     </select>
-                                </div>
-                                <div class=" col-8 col-sm-8 col-md-4">
-                                    <input type="number" class="form-control" id="año" name="año" placeholder="ejem 2022" value="" min="1999" max="2050">
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class=" col-12 col-sm-12 col-md-6">
-                        <form  action="{{ route('Buscar_estancia1_c.index',[$proceso[0],$proceso[1]]) }}" method="GET">
-                            @csrf
-                            <!--Buscar datos cedula-->
-                            <div class="row">
-                                <div class=" col-8 col-sm-8 col-md-10">
-                                    <input type="text" class="form-control" id="texto" name="texto" placeholder="Buscar datos cedula" value="">
-
-                                </div>
-                                <div class="col-4 col-sm-4 col-md-2">
-                                    <button type="submit" class="btn btn-primary buscar"><i class="zmdi zmdi-search"></i></button>
                                 </div>
                             </div>
                         </form>

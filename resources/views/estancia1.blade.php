@@ -48,7 +48,9 @@
                                 <select class="form-control" name="asesorempresarial" id="asesorempresarial">
                                     <option value="">Seleccionar un dato</option>
                                     @foreach ($ae as $empresarial)
-                                        <option value="{{$empresarial->IdAE}}">{{$empresarial->APP . " " . $empresarial->APM . " " . $empresarial->Nombre}}</option>
+                                        <option value="{{ $empresarial->IdAE }}">
+                                            {{ $empresarial->APP . ' ' . $empresarial->APM . ' ' . $empresarial->Nombre }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -57,7 +59,9 @@
                                 <select class="form-control" name="asesoracademico" id="asesoracademico">
                                     <option value="">Seleccionar un dato</option>
                                     @foreach ($aa as $academico)
-                                        <option value="{{$academico->IdAsesor}}">{{$academico->APP . " " . $academico->APM . " " . $academico->Nombre}}</option>
+                                        <option value="{{ $academico->IdAsesor }}">
+                                            {{ $academico->APP . ' ' . $academico->APM . ' ' . $academico->Nombre }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -79,8 +83,8 @@
                 </thead>
                 <tbody>
                     @foreach ($documentos->when($proceso[0] != 5, function ($query) {
-                        return $query->take(8);
-                    }) as $documento)
+            return $query->take(8);
+        })->skip(3) as $documento)
                         <tr>
                             <td style="display: none">{{ $documento->IdTipoDoc }}</td>
                             <td>{{ $documento->nombredoc }}</td>
@@ -126,14 +130,28 @@
                                             <i class="zmdi zmdi-file"></i>
                                             <input type="file" class="archivo" name="docs_archivo">
                                         </span>
-                                        <button type="submit" class="btn btn-outline-info btnSubir">Enviar</button>
+                                        @if ($periodoActual != null)
+                                            @if (($documento->IdTipoDoc == 4 || $documento->IdTipoDoc == 5) && $periodoActual->Activo_1 == 1)
+                                                <button type="submit"
+                                                    class="btn btn-outline-info btnSubir">Enviar</button>
+                                            @endif
+                                            @if (($documento->IdTipoDoc == 6 || $documento->IdTipoDoc == 7) && $periodoActual->Activo_2 == 1)
+                                                <button type="submit"
+                                                    class="btn btn-outline-info btnSubir">Enviar</button>
+                                            @endif
+                                            @if (($documento->IdTipoDoc == 8) && $periodoActual->Activo_3 == 1)
+                                                <button type="submit"
+                                                    class="btn btn-outline-info btnSubir">Enviar</button>
+                                            @endif
+                                        @endif
                                     </form>
                                 @endif
                                 @foreach ($documentacion as $doc)
                                     @if ($doc->IdTipoDoc == $documento->IdTipoDoc)
                                         @if ($doc->ruta == null)
                                         @else
-                                            <form action="{{ route('cancelar_doc.index', [$proceso[0], $doc->IdDoc]) }}"
+                                            <form
+                                                action="{{ route('cancelar_doc.index', [$proceso[0], $doc->IdDoc]) }}"
                                                 method="POST" enctype="multipart/form-data">
                                                 @csrf
                                                 <input type="text" value="{{ $doc->ruta }}" class="nombreDoc"

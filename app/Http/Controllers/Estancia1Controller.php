@@ -17,13 +17,14 @@ use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File; 
+use Illuminate\Support\Facades\File;
 use Carbon\Carbon;
 use phpDocumentor\Reflection\Location;
 
 class Estancia1Controller extends Controller
 {
-    public function CrearPeriodoAlumno(Request $request,$idUsuario,$procesos){
+    public function CrearPeriodoAlumno(Request $request, $idUsuario, $procesos)
+    {
         $date = Carbon::now();
         $anio = Carbon::parse($date)->year;
         $mes = Carbon::parse($date)->month;
@@ -34,14 +35,14 @@ class Estancia1Controller extends Controller
         } else {
             $numero = $anio . '03';
         }
-        $periodoExistente = periodo::where('Periodo',$numero)->first();
-        $procesoExistente = proceso::where('IdUsuario',$idUsuario)->where('IdTipoProceso',$procesos)->where('IdPeriodo',$periodoExistente->IdPeriodo)->first();
-        if(!$periodoExistente){
+        $periodoExistente = periodo::where('Periodo', $numero)->first();
+        $procesoExistente = proceso::where('IdUsuario', $idUsuario)->where('IdTipoProceso', $procesos)->where('IdPeriodo', $periodoExistente->IdPeriodo)->first();
+        if (!$periodoExistente) {
             return redirect('estancia1/' . $procesos)->with('error', 'Periodo Actual todavia no existe, contacta con el administrador del sistema');
-        }else {
-            if($procesoExistente){
-                return redirect('estancia1/'. $procesos)->with('error','ya tienes un proceso con este periodo');
-            }else{
+        } else {
+            if ($procesoExistente) {
+                return redirect('estancia1/' . $procesos)->with('error', 'ya tienes un proceso con este periodo');
+            } else {
                 $request->validate([
                     'asesorempresarial' => 'required',
                     'asesoracademico' => 'required',
@@ -53,7 +54,7 @@ class Estancia1Controller extends Controller
                 $proceso->IdTipoProceso = $procesos;
                 $proceso->IdPeriodo = $periodoExistente->IdPeriodo;
                 $proceso->save();
-                $idProceso = $proceso->id;
+                $idProceso = $proceso->IdProceso;
                 $relacionAA = new aa_pp;
                 $relacionAA->IdAsesor = $asesorAcademico;
                 $relacionAA->IdProceso = $idProceso;
@@ -62,10 +63,10 @@ class Estancia1Controller extends Controller
                 $relacionAE->Idae = $asesorEmpresarial;
                 $relacionAE->IdProceso = $idProceso;
                 $relacionAE->save();
-                return redirect('estancia1/'. $procesos)->with('success','Dado de alta en periodo actual'); 
+                return redirect('estancia1/' . $procesos)->with('success', 'Dado de alta en periodo actual');
             }
         }
-        return view('estancia1.index')->with('error','error desconocido favor de intentarlo en otro momento');
+        return view('estancia1.index')->with('error', 'error desconocido favor de intentarlo en otro momento');
     }
 
     public function ver($proces)
@@ -78,18 +79,30 @@ class Estancia1Controller extends Controller
         } else return redirect('inicio');
         $tiposdocumentos = DB::table('tipodoc')->get();
         $documentos = DB::table('documentos')
-        ->join('detalledoc','documentos.IdDoc', "=" ,'detalledoc.IdDoc')
-        ->join('proceso','proceso.IdProceso', "=", "detalledoc.IdProceso")
+            ->join('detalledoc', 'documentos.IdDoc', "=", 'detalledoc.IdDoc')
+            ->join('proceso', 'proceso.IdProceso', "=", "detalledoc.IdProceso")
+            ->where('IdTipoProceso', $proces)
+            ->where('IdUsuario', $userID)
+            ->get();
+        $proceso = DB::table('proceso')
         ->where('IdTipoProceso',$proces)
-        ->where('IdUsuario',$userID)
+        ->where('IdUsuario', $userID)
         ->get();
         $asesoresEmpresariales = DB::table('ae')->get();
         $asesoresAcademicos = DB::table('aa')->get();
-        return view('estancia1', ['proceso' => $var,'documentos' => $tiposdocumentos,'documentacion'=>$documentos,'ae' =>$asesoresEmpresariales,'aa' =>$asesoresAcademicos]);
+        if ($proceso->count() == 0) {
+
+        } else {
+            $procesoActual = DB::table('periodo')
+                ->where('IdPeriodo', $proceso[0]->IdPeriodo)->get()->first();
+            return view('estancia1', ['proceso' => $var, 'documentos' => $tiposdocumentos, 'documentacion' => $documentos, 'ae' => $asesoresEmpresariales, 'aa' => $asesoresAcademicos, 'periodoActual'=>$procesoActual]);
+        }
+        return view('estancia1', ['proceso' => $var, 'documentos' => $tiposdocumentos, 'documentacion' => $documentos, 'ae' => $asesoresEmpresariales, 'aa' => $asesoresAcademicos, 'periodoActual' =>null]);
     }
 
     //subir documento sin datos carga horaria
-    public function subir_carga_horaria_estancia1(Request $request, $name, $proces, $IdTipoDoc){
+    public function subir_carga_horaria_estancia1(Request $request, $name, $proces, $IdTipoDoc)
+    {
         $userID = Auth::user()->id;
         $date = Carbon::now();
         $anio = Carbon::parse($date)->year;
@@ -101,9 +114,9 @@ class Estancia1Controller extends Controller
         } else {
             $numero = $anio . '03';
         }
-        $periodoExistente = periodo::where('Periodo',$numero)->first();
-        $procesoExistente = proceso::where('IdUsuario',$userID)->where('IdTipoProceso',$proces)->where('IdPeriodo',$periodoExistente->IdPeriodo)->first();
-        if($procesoExistente){
+        $periodoExistente = periodo::where('Periodo', $numero)->first();
+        $procesoExistente = proceso::where('IdUsuario', $userID)->where('IdTipoProceso', $proces)->where('IdPeriodo', $periodoExistente->IdPeriodo)->first();
+        if ($procesoExistente) {
             $Ndoc = [
                 'carga_horaria', 'constancia_derecho', 'carta_responsiva', 'f01', 'f02', 'f03', 'f04', 'f05', 'carta_compromiso', 'reporte_mensual', 'reporte_mensual', 'reporte_mensual', 'reporte_mensual', 'reporte_mensual', 'reporte_mensual',
                 'reporte_mensual', 'reporte_mensual', 'reporte_mensual', 'reporte_mensual', 'reporte_mensual', 'reporte_mensual'
@@ -112,10 +125,10 @@ class Estancia1Controller extends Controller
             try {
                 if ($request->hasFile('docs_archivo')) {
                     $archivo = $request->file('docs_archivo');
-                    $nombreDoc = $name . $Ndoc[$IdTipoDoc-1] . $proces . '.pdf';
-                    $RutaDeGuardado =public_path().'\documentos'; 
+                    $nombreDoc = $name . $Ndoc[$IdTipoDoc - 1] . $proces . '.pdf';
+                    $RutaDeGuardado = public_path() . '\documentos';
                     $archivo->move($RutaDeGuardado, $nombreDoc);
-                    $data5 = array('ruta'=> $nombreDoc, 'IdEstado'=> 2,'IdTipoDoc'=>$IdTipoDoc,'Usuario'=>$userID);
+                    $data5 = array('ruta' => $nombreDoc, 'IdEstado' => 2, 'IdTipoDoc' => $IdTipoDoc, 'Usuario' => $userID);
                     $response = documentos::requestInsertDoc($data5);
                     if (isset($response["code"]) && $response["code"] == 200) {
                         $arrayResult = array(
@@ -136,13 +149,12 @@ class Estancia1Controller extends Controller
                     }
                     //controlador de estatus
                     $data6 = array(
-                        'IdDoc'=>  $response['IdDoc'],
-                        'IdProceso'=>  $procesoExistente->IdProceso, 
+                        'IdDoc' =>  $response['IdDoc'],
+                        'IdProceso' =>  $procesoExistente->IdProceso,
                     );
-                    $response_documentos = detalledoc::requestInsertDetailsDocs($data6); 
-        
-                    if (isset($response_documentos["code"]) && $response_documentos["code"] == 200) {
+                    $response_documentos = detalledoc::requestInsertDetailsDocs($data6);
 
+                    if (isset($response_documentos["code"]) && $response_documentos["code"] == 200) {
                     } else {
                         $arrayResult = array(
                             'Response_2'  => array(
@@ -172,9 +184,9 @@ class Estancia1Controller extends Controller
             if ($msj == '{"Response":{"ok":true,"message":"Se ha guardado el registro","code":"200"}}') {
                 return redirect('estancia1/' . $proces)->with('success', 'Documento agregado');
             } else {
-                return redirect('estancia1/' . $proces)->with('errorPDF', 'Hay un error en el nombre de tu pdf'.$msj);
+                return redirect('estancia1/' . $proces)->with('errorPDF', 'Hay un error en el nombre de tu pdf' . $msj);
             }
-        }else{
+        } else {
             return redirect('estancia1/' . $proces)->with('error', 'Favor de darse de alta en periodo');
         }
     }
@@ -418,18 +430,19 @@ class Estancia1Controller extends Controller
         return view('usuario.observaciones_carga_horaria', ['datos' => $observ, 'proceso' => $proces]);
     }
 
-    public function cancelar_documento_alumno(Request $request,$proces, $idDoc){
+    public function cancelar_documento_alumno(Request $request, $proces, $idDoc)
+    {
         $nombreDoc = $request->input('nombreDoc');
-        $documento=documentos::find($idDoc);
-        $relacionDocumentos=detalledoc::where('IdDoc',$idDoc)->first();
+        $documento = documentos::find($idDoc);
+        $relacionDocumentos = detalledoc::where('IdDoc', $idDoc)->first();
         $documento->delete();
         $relacionDocumentos->delete();
-        $path=public_path().'/documentos/'.$nombreDoc;
-        if(File::exists($path)){
-          File::delete($path);
-          return redirect('estancia1/'.$proces)->with('success','Documento Cancelada: '.$nombreDoc);
-        }else{
-          return redirect('estancia1/'.$proces)->with('error','error cancelando: ' .$nombreDoc. ' Favor de intentarlo mas tarde');
+        $path = public_path() . '/documentos/' . $nombreDoc;
+        if (File::exists($path)) {
+            File::delete($path);
+            return redirect('estancia1/' . $proces)->with('success', 'Documento Cancelada: ' . $nombreDoc);
+        } else {
+            return redirect('estancia1/' . $proces)->with('error', 'error cancelando: ' . $nombreDoc . ' Favor de intentarlo mas tarde');
         }
     }
 }

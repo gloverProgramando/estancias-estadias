@@ -52,8 +52,14 @@
                 <thead>
                     <tr class="table-warning">
                         <td>Periodo</td>
-                        <td>Fase</td>
-                        <td>Fase Activa</td>
+                        <td>Fase 1</td>
+                        <td>Fase Activa 1</td>
+                        <td class="text-center">Acciones</td>
+                        <td>Fase 2</td>
+                        <td>Fase Activa 2</td>
+                        <td class="text-center">Acciones</td>
+                        <td>Fase 3</td>
+                        <td>Fase Activa 3</td>
                         <td class="text-center">Acciones</td>
                     </tr>
                 </thead>
@@ -61,18 +67,52 @@
                     @foreach ($periodos as $periodo)
                         <tr>
                             <td>{{ $periodo->Periodo }}</td>
-                            <td>{{ $periodo->Idfase }}</td>
-                            <td>{{ $periodo->Activo }}</td>
+                            <td>{{ $periodo->Idfase_1 }}</td>
+                            <td>{{ $periodo->Activo_1 }}</td>
                             <td class="text-center">
-                                @if ($periodo->Activo == 1)
+                                @if ($periodo->Activo_1 == 1)
                                     @csrf
-                                    <form action="{{route('adminActivarFase.index',$periodo->IdPeriodo)}}">
+                                    <form action="{{route('adminActivarFase.index',[$periodo->IdPeriodo,1])}}">
                                         <button type="submit" class="btn btn-warning "> Desactivar <i
                                                 class="zmdi zmdi-edit"></i></button>
                                     </form>
                                 @else
                                     @csrf
-                                    <form action="{{route('adminActivarFase.index',$periodo->IdPeriodo)}}">
+                                    <form action="{{route('adminActivarFase.index',[$periodo->IdPeriodo,1])}}">
+                                        <button type="submit" class="btn btn-warning "> Activar <i
+                                                class="zmdi zmdi-edit"></i></button>
+                                    </form>
+                                @endif
+                            </td>
+                            <td>{{ $periodo->Idfase_2 }}</td>
+                            <td>{{ $periodo->Activo_2 }}</td>
+                            <td class="text-center">
+                                @if ($periodo->Activo_2 == 1)
+                                    @csrf
+                                    <form action="{{route('adminActivarFase.index',[$periodo->IdPeriodo,2])}}">
+                                        <button type="submit" class="btn btn-warning "> Desactivar <i
+                                                class="zmdi zmdi-edit"></i></button>
+                                    </form>
+                                @else
+                                    @csrf
+                                    <form action="{{route('adminActivarFase.index',[$periodo->IdPeriodo,2])}}">
+                                        <button type="submit" class="btn btn-warning "> Activar <i
+                                                class="zmdi zmdi-edit"></i></button>
+                                    </form>
+                                @endif
+                            </td>
+                            <td>{{ $periodo->Idfase_3 }}</td>
+                            <td>{{ $periodo->Activo_3 }}</td>
+                            <td class="text-center">
+                                @if ($periodo->Activo_3 == 1)
+                                    @csrf
+                                    <form action="{{route('adminActivarFase.index',[$periodo->IdPeriodo,3])}}">
+                                        <button type="submit" class="btn btn-warning "> Desactivar <i
+                                                class="zmdi zmdi-edit"></i></button>
+                                    </form>
+                                @else
+                                    @csrf
+                                    <form action="{{route('adminActivarFase.index',[$periodo->IdPeriodo,3])}}">
                                         <button type="submit" class="btn btn-warning "> Activar <i
                                                 class="zmdi zmdi-edit"></i></button>
                                     </form>

@@ -104,7 +104,7 @@ Route::get('/logout', [LoginController::class, 'destroy'])
     ->middleware('auth.admin')
     ->name('asesores_subir_E.index');
 
-    Route::match(['post','get'],'/modificarFase_{id}',[documentosEstancia1AdminController::class,'cambiarPeriodo'])
+    Route::match(['post','get'],'/modificarFase_{id}/{fase}',[documentosEstancia1AdminController::class,'cambiarPeriodo'])
     ->middleware('auth.admin')
     ->name('adminActivarFase.index');
 //Ver usuarios

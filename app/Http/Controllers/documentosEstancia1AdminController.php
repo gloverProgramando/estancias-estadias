@@ -35,15 +35,17 @@ class documentosEstancia1AdminController extends Controller
         return view('admin.crear_periodo',compact('fases','periodos'));
     }
 
-    public function cambiarPeriodo($IdPeriodo) {
+    public function cambiarPeriodo($IdPeriodo,$fase) {
         $periodo = Periodo::find($IdPeriodo);
         $periodos = DB::table('periodo')
         ->get();
         $fases = DB::table('fases')
         ->get();
         if($periodo){
-            $activo = $periodo->Activo == 1 ? 0 : 1;
-            $periodo->Activo = $activo;
+            $valor = $fase;
+            $nombre_columna = 'Activo_'.$valor;
+            $activo = $periodo->$nombre_columna == 1 ? 0 : 1;
+            $periodo->$nombre_columna = $activo;
             $periodo->save();
             $mensaje = $activo == 0 ? 'La fase ha sido desactivada' : 'La fase ha sido activada';
             return redirect()->to('/Periodo')->with('success',$mensaje , compact('fases','periodos'));
@@ -68,13 +70,15 @@ class documentosEstancia1AdminController extends Controller
         if($periodoExistente){
             return redirect()->to('/Periodo')->with('error','Periodo: '.$numero.' ya existe, si quiere activar las etapas, favor de hacerlo en la parte de abajo');
         }
-        for ($i = 1; $i <= 3; $i++) {
             $periodo = new Periodo;
             $periodo->Periodo = $numero;
-            $periodo->Idfase = $i;
-            $periodo->Activo = 1;
+            $periodo->Idfase_1 = 1;
+            $periodo->Activo_1 = 1;
+            $periodo->Idfase_2 = 2;
+            $periodo->Activo_2 = 1;
+            $periodo->Idfase_3 = 3;
+            $periodo->Activo_3 = 1;
             $periodo->save();
-        }
         return redirect()->to('/Periodo')->with('success','periodo: '.$numero.' creado con exito');
     }
 
@@ -85,8 +89,8 @@ class documentosEstancia1AdminController extends Controller
             //$NmProces=$name[$proces-1];
             $var=[$proces,$name[$proces-1]];//guarda el numero y nombre del proceso
         }else return redirect('admin');
-        
-        return view('admin.documentosEstancia1',['proceso'=>$var]);
+        $periodos = DB::table('periodo')->get();
+        return view('admin.documentosEstancia1',['proceso'=>$var,'periodos'=>$periodos]);
     }
 
     public function ver_cd_estancia_f03($id,$name){//#
@@ -257,7 +261,7 @@ class documentosEstancia1AdminController extends Controller
     //buscar datos de usuario
     public function buscador_estancia1(Request $request,$proces,$name){//*optimizado
         $texto   =trim($request->get('texto'));
-        $estatus =trim($request->get('estatus'));
+        $estatus =($request->get('estatus'));
         $año     =trim($request->get('año'));
         $name=['Estancia I','Estancia II','Estadia','Estadias Nacionales','Servicio Social'];
         if($proces>0 && $proces<=5){//comprueba si el numero es de algun proceso del 1...5
@@ -271,6 +275,7 @@ class documentosEstancia1AdminController extends Controller
         ->join('users','users.id', "=", 'proceso.IdUsuario')
         ->where('IdTipoProceso',$proces)
         ->where('name','LIKE','%'.$texto.'%')
+        ->where('IdPeriodo','=',$estatus)
         ->orWhere('Nombre','LIKE','%'.$texto.'%')
         ->get();
         return view('nombres.Buscar_estancia1',['proceso'=>$var,'documentos'=>$tiposdocumentos,'documentacion'=>$documentos]);
@@ -394,26 +399,20 @@ class documentosEstancia1AdminController extends Controller
                 $idEmpresa = $empresa ? $empresa->IdEmpresa : Empresa::insertGetId($batchEmpresa[count($batchEmpresa) - 1]);
     
                 // Agregar la relación a la tabla ae_emp
-                $batchAE_Empresa[] = [
-                    'IdAE' => $idAE,
-                    'IdEmp' => $idEmpresa
-                ];
-    
-                $rowCount++;
-                if ($rowCount == $batchSize) {
-                    ae_emp::insert($batchAE_Empresa);
-                    $batchAE_Empresa = [];
-                    $rowCount = 0;
-                }
+                if($empresa && $ae){
+                    $batchAE_Empresa[] = [
+                        'IdAE' => $idAE,
+                        'IdEmp' => $idEmpresa
+                    ];
+                    $rowCount++;
+                    if ($rowCount == $batchSize) {
+                        ae_emp::insert($batchAE_Empresa);
+                        $batchAE_Empresa = [];
+                        $rowCount = 0;
+                    }
+                }    
+
             }
-    
-            // Procesar el último lote (si existe)
-            if ($rowCount > 0) {
-                Asesor_Emp::insert($batchAE);
-                Empresa::insert($batchEmpresa);
-                ae_emp::insert($batchAE_Empresa);
-            }
-    
             return redirect()->to('/Asesores')->with('success','Asesores agregados');
         }
     
