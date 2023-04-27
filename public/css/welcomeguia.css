@@ -1,0 +1,131 @@
+.onboarding-btn {
+    padding: 12px 32px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 50%;
+    background-color: #fbf37e;
+    background-image: linear-gradient(270deg, #fbf37e 0%, #F7CE68 50%, #df770f 100%);
+    color:rgb(0, 0, 0);
+    transform:translatez(10px); 
+    border: none; /**/
+    cursor: pointer;
+    box-shadow: #222;
+}
+
+.onboarding-container,
+.onboarding-container *{
+box-sizing: border-box;
+}
+.onboarding-container .image img{
+    height:480px;
+    width: 800px;
+     margin: 32 0;
+    }
+
+/*Fondo gris opaco*/
+.onboarding-overlay{
+    background: rgba(0,0,0,0.4);
+    position: fixed;
+    left:0;
+    top:0;
+    height: 100vh;
+    width: 100%;
+    opacity: 0;
+    pointer-events: none;
+    transition:all 100ms ease ;
+}
+.onboarding-overlay.active{
+    opacity: 1;
+}
+/*orientacion de la caja (derecha,izquierda)   CHECAR DESPUES*/
+.onboarding-container  {
+    z-index:300;
+    position:fixed;
+    font-family: "Roboto", sans-serif;
+    left: 800px;
+    top: 600px;
+    transform:translate(-50%,-84%); 
+    box-shadow: 0 4px 40px -8px rgba(0,0,0,4);
+    pointer-events: none;
+    opacity: 0;
+    transition: all 100ms ease;
+}
+.onboarding-container.active{
+    transform:translate(-50%,-84%);
+    opacity: 1; 
+}
+
+.onboarding-container .content {
+    background: #fff;
+    max-width: 800px; /*CONTEDEDOR DE IMAGEN*/
+    max-height: 700px;
+    overflow: hidden;
+}
+.onboarding-container .steps {
+    display: flex; /*Contenedor de los pasos*/
+    width: 300%;
+    transition: all 400ms ease;
+}
+
+.onboarding-container h3 {
+    margin:0;
+    font-size: 32px;
+    text-align: center;
+    padding: 0 32px;
+    cursor: pointer;
+    pointer-events:all;
+}
+.onboarding-container p {
+    line-height: 1.8;
+    padding: 0 32px;
+}
+
+.onboarding-container .next-btn {
+    width:100%;
+    padding: 18px 32px;
+    font-size: 16px;
+    font-weight: bold;
+    border:none;
+    cursor: pointer;
+    background: rgb(2,0,36);
+    background: radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 100%, rgba(0,212,255,1) 100%); 
+    color:#fff;
+    pointer-events:all;
+    text-transform: uppercase;
+}
+
+.onboarding-container .skip-btn{
+    position: absolute;
+    top:8px;
+    right: 16px;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color:#636363
+}
+
+.onboarding-container .dots{
+    display: flex;
+    justify-content: center;
+    gap:8px;
+}
+.onboarding-container .dot{
+    width: 10px;
+    height: 10px;
+    background: #dbdbdb;
+    border-radius: 50%;
+    transition: all 400ms ease;
+}
+
+.onboarding-container  .dot.active{
+    background:#222;
+    
+}
+
+.Buttonnext{
+    width: 30px;
+    height: 30px;
+    
+}
+
+
